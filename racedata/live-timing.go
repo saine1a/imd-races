@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"log"
 	"fmt"
+	"io/ioutil"
 )
 
 var client = &http.Client{}
@@ -27,9 +28,21 @@ func GetRace() {
 	
 	resp, err := client.Get(url.String())
 
+	defer resp.Body.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(resp)
+	if resp.StatusCode != http.StatusOK {
+		log.Fatal(resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	fmt.Println(string(body))
 }
