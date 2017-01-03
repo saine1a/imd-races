@@ -13,7 +13,8 @@ import (
 
 var client = &http.Client{}
 
-func GetRace() {
+
+func GetRace() [] Result {
 
 	url, err := url.Parse("http://live-timing.com/includes/aj_race.php")
 
@@ -51,7 +52,6 @@ func GetRace() {
 
 	s := bufio.NewScanner(strings.NewReader(string(body)))
 
-
 	split := func(data []byte, atEOF bool) (int,[]byte,error) {
 
 		var i int
@@ -83,55 +83,69 @@ func GetRace() {
 
 //		fmt.Println("Skipping " + s.Text())
 	}
-	
+
+	results := make([]Result, 0, 200)
+
+	var i = 0
+
 	for ; s.Scan() && s.Text() != "endC" ; {
 
 		components := strings.Split(s.Text(),"=")
 
-		fmt.Println(s.Text())
-		
 		switch ( components[0] ) {
 		case "b" :
-			fmt.Println("Bib " + components[1])
+                        i += 1
+			results = append(results,Result{})
+			results[i-1].Dnf = false
+			results[i-1].Bib = components[1]
 			break;
-		case "m" :
-			fmt.Println("Athlete " + components[1])
+	        case "m" :
+			results[i-1].Athlete = components[1]
 			break;
 		case "c" :
-			fmt.Println("Club " + components[1])
+			results[i-1].Club = components[1]
 			break;
 		case "s" :
-			fmt.Println("Age " + components[1])
+			results[i-1].Age = components[1]
 			break;
 		case "un" :
-			fmt.Println("USSA " + components[1])
+			results[i-1].Ussa = components[1]
 			break
 		case "r1" :
-			if components[1] != "DNF" {
+			if ! strings.HasPrefix(components[1],"D")   {
 				f, err := strconv.ParseFloat(components[2],64)
 				if err == nil {
-					fmt.Println("R1 " + strconv.FormatFloat(f / 1000, 'f', -1, 64) )
+					results[i-1].R1 = f
 				} else {
-					fmt.Println("R1 bad format")
+					results[i-1].R1 = -1
+					results[i-1].Dnf = true
 				}
 			} else {
-				fmt.Println("R1 DNF")
+				results[i-1].DnfReason = components[1]
+				results[i-1].Dnf = true
+				results[i-1].R1 = -1
 			}
 			break
 		case "r2" :
-			if components[1] != "DNF" {
+			if ! strings.HasPrefix(components[1],"D") {
 				f, err := strconv.ParseFloat(components[2],64)
 				if err == nil {
-					fmt.Println("R2 " + strconv.FormatFloat(f / 1000, 'f', -1, 64) )
+					results[i-1].R2 = f
 				} else {
-					fmt.Println("R2 bad format")
+					results[i-1].R2 = -1
+					results[i-1].Dnf = true
 				}
 			} else {
-				fmt.Println("R2 DNF")
+				if results[i-1].DnfReason == "" {
+					results[i-1].DnfReason = components[1]
+				}
+				results[i-1].Dnf = true
+				results[i-1].R2 = -1
 			}
 			break
 		default :
 		}
-		
 	}
+
+	return results
 }
