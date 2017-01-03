@@ -6,6 +6,8 @@ import (
 	"log"
 	"fmt"
 	"io/ioutil"
+	"bufio"
+	"strings"
 )
 
 var client = &http.Client{}
@@ -43,6 +45,25 @@ func GetRace() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	s := bufio.NewScanner(strings.NewReader(string(body)))
+
+	var b []byte
 	
-	fmt.Println(string(body))
+	for ; s.Scan() ; {
+		str := s.Text()
+		for _, tok := range str {
+			switch tok {
+			case '|':
+				b = append(b, "\",\""...)
+			case '=':
+				b = append(b, "\"=\""...)
+			default:
+				b = append(b, string(tok)...)
+			}
+		}
+	}
+
+
+	fmt.Println(string(b))
 }
