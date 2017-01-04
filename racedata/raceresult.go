@@ -13,6 +13,7 @@ type Result struct {
 	Dnf bool
 	DnfReason string
 	AgePosition int
+	Points int
 }
 
 func TotalTime(result Result) float64 {

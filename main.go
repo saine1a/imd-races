@@ -23,9 +23,9 @@ func main() {
 
 			if strings.Contains(v.Athlete,"Brain") {			
 				if v.Dnf == false {
-					fmt.Printf("%s %s %d : %s\n", results.RaceName, results.RaceType, v.AgePosition, v.Athlete)
+					fmt.Printf("%s %s %d %d : %d\n", results.RaceName, results.RaceType, v.AgePosition, v.Athlete, v.Points)
 				} else {
-					fmt.Printf("%s : %s\n", v.DnfReason, v.Athlete)
+					fmt.Printf("%s : %s\n", v.DnfReason, v.Athlete, v.Points)
 				}
 			}
 		}
