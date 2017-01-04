@@ -41,9 +41,9 @@ func main() {
 
 	allPoints := analysis.PointsAnalysis(raceResults, "U16")
 
-	for i, a := range allPoints {
+	for _, a := range allPoints {
 
-		fmt.Printf("%d %s %d %d %d\n", i+1, a.Athlete, analysis.GetSLPoints(a), analysis.GetGSPoints(a),  analysis.GetSLPoints(a) + analysis.GetGSPoints(a))
+		fmt.Printf("%d %s %d %d %d\n", a.OverallRank, a.Athlete, a.SLPointTotal, a.GSPointTotal,  a.OverallPoints)
 	}
 
 }

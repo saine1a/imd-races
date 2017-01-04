@@ -47,6 +47,10 @@ type Points struct {
 	Athlete string
 	GSPoints []int
 	SLPoints []int
+	GSPointTotal int
+	SLPointTotal int
+	OverallPoints int
+	OverallRank int
 }
 
 type PointsArray [] *Points
@@ -61,10 +65,10 @@ func ( a PointsArray) Swap (i, j int) {
 
 func ( a PointsArray) Less (i, j int) bool {
 
-	return (GetSLPoints(a[i]) + GetGSPoints(a[i])) < (GetSLPoints(a[j]) + GetGSPoints(a[j]))
+	return a[i].OverallPoints < a[j].OverallPoints
 }
 
-func GetSLPoints(p *Points) int {
+func CalculatePoints(p *Points) {
 
 	sort.Sort(sort.Reverse(sort.IntSlice(p.SLPoints)))
 
@@ -76,10 +80,7 @@ func GetSLPoints(p *Points) int {
 		}
 	}
 
-	return sl
-}
-
-func GetGSPoints(p *Points) int {
+	p.SLPointTotal = sl
 
 	sort.Sort(sort.Reverse(sort.IntSlice(p.GSPoints)))
 
@@ -91,7 +92,9 @@ func GetGSPoints(p *Points) int {
 		}
 	}
 
-	return gs
+	p.GSPointTotal = gs
+
+	p.OverallPoints = gs + sl
 }
 
 func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points {
@@ -114,9 +117,11 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 
 			if r.RaceType == "Slalom" {
 				athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints,v.Points)
+				CalculatePoints(athletePoints[v.Ussa])
 			} else {
 				if r.RaceType == "Giant Slalom" {
 					athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
+					CalculatePoints(athletePoints[v.Ussa])
 				}
 			}
 
@@ -133,6 +138,16 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 	}
 
 	sort.Sort(sort.Reverse(points))
+
+	for i, a := range points {
+
+		if i > 0 && a.OverallPoints == points[i-1].OverallPoints {
+				a.OverallRank = points[i-1].OverallRank
+		} else {
+			a.OverallRank = i+1
+		}
+
+	}
 	
 	return points
 }
