@@ -7,11 +7,11 @@ import (
 
 var points = []int{100,80,60,50,45,40,36,32,29,26,24,22,20,18,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}
 
-func RaceAnalysis(results [] racedata.Result) map[string]racedata.ResultArray {
+func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultArray {
 
 	ageGroupMap := make(map[string]racedata.ResultArray)
 	
-	for _, v := range results {
+	for _, v := range results.Results {
 
 		ageGroupMap[v.Age] = append(ageGroupMap[v.Age],v)
 	}
@@ -40,4 +40,99 @@ func RaceAnalysis(results [] racedata.Result) map[string]racedata.ResultArray {
 	}
 
 	return ageGroupMap
+}
+
+type Points struct {
+
+	Athlete string
+	GSPoints []int
+	SLPoints []int
+}
+
+type PointsArray [] *Points
+
+func ( a PointsArray) Len() int {
+	return len(a)
+}
+
+func ( a PointsArray) Swap (i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
+
+func ( a PointsArray) Less (i, j int) bool {
+
+	return (GetSLPoints(a[i]) + GetGSPoints(a[i])) < (GetSLPoints(a[j]) + GetGSPoints(a[j]))
+}
+
+func GetSLPoints(p *Points) int {
+
+	sort.Sort(sort.Reverse(sort.IntSlice(p.SLPoints)))
+
+	sl := 0
+	
+	for i, pts := range p.SLPoints {
+		if i < 2 {
+			sl += pts
+		}
+	}
+
+	return sl
+}
+
+func GetGSPoints(p *Points) int {
+
+	sort.Sort(sort.Reverse(sort.IntSlice(p.GSPoints)))
+
+	gs := 0
+
+	for i, pts := range p.GSPoints {
+		if i < 2 {
+			gs += pts
+		}
+	}
+
+	return gs
+}
+
+func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points {
+
+	var athletePoints = make(map[string]*Points)
+	
+	for _, r := range races {
+
+		ageGroupResults := SingleRaceAnalysis(r)
+
+		ageSpecificResults := ageGroupResults[ageGroup]
+
+		for _, v := range ageSpecificResults {
+
+			if athletePoints[v.Ussa] == nil {
+				athletePoints[v.Ussa] = &Points{}
+			}
+			
+			athletePoints[v.Ussa].Athlete = v.Athlete
+
+			if r.RaceType == "Slalom" {
+				athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints,v.Points)
+			} else {
+				if r.RaceType == "Giant Slalom" {
+					athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
+				}
+			}
+
+			
+		}
+	}
+
+	points := make(PointsArray, 0, 100)
+
+	for _, v := range athletePoints {
+
+		points = append(points,v)
+		
+	}
+
+	sort.Sort(sort.Reverse(points))
+	
+	return points
 }

@@ -11,23 +11,39 @@ import (
 func main() {
 
 	races := []string{ "164315", "164466", "164383", "164431" }
-	
-	for _, race := range races {
-		results := racedata.GetRace(race)
 
-		ageGroupResults := analysis.RaceAnalysis(results.Results)
+	keyAthletes := []string{"Brain","Townshend","Haaijer","Stojsic"}
+
+	raceResults := make ([]racedata.RaceResult,0,20)
+	
+	for r, race := range races {
+
+		raceResults = append(raceResults,racedata.GetRace(race))
+
+		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[r])
 	
 		u16Results := ageGroupResults["U16"]
 
 		for _, v := range u16Results {
 
-			if strings.Contains(v.Athlete,"Brain") {			
-				if v.Dnf == false {
-					fmt.Printf("%s %s %d %d : %d\n", results.RaceName, results.RaceType, v.AgePosition, v.Athlete, v.Points)
-				} else {
-					fmt.Printf("%s : %s\n", v.DnfReason, v.Athlete, v.Points)
+			for _, a := range keyAthletes {
+				if strings.Contains(v.Athlete,a) {			
+					if v.Dnf == false {
+						fmt.Printf("%s %s %d %s %d\n", raceResults[r].RaceName, raceResults[r].RaceType, v.AgePosition, v.Athlete, v.Points)
+					} else {
+					fmt.Printf("%s : %s %d\n", v.DnfReason, v.Athlete, v.Points)
+					}
 				}
 			}
 		}
+
 	}
+
+	allPoints := analysis.PointsAnalysis(raceResults, "U16")
+
+	for i, a := range allPoints {
+
+		fmt.Printf("%d %s %d %d %d\n", i+1, a.Athlete, analysis.GetSLPoints(a), analysis.GetGSPoints(a),  analysis.GetSLPoints(a) + analysis.GetGSPoints(a))
+	}
+
 }
