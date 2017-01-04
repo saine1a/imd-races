@@ -1,9 +1,5 @@
 package racedata
 
-import (
-	"fmt"
-	"strconv"
-)
 
 type Result struct {
 
@@ -16,9 +12,20 @@ type Result struct {
 	R2 float64
 	Dnf bool
 	DnfReason string
+	AgePosition int
+}
+
+func TotalTime(result Result) float64 {
+	return result.R1 + result.R2
 }
 
 type ResultArray []Result
+
+type RaceResult struct {
+	RaceName string
+	RaceType string
+	Results ResultArray
+}
 
 func ( a ResultArray) Len() int {
 	return len(a)
@@ -35,7 +42,7 @@ func ( a ResultArray) Less (i, j int) bool {
 	if a[i].Dnf == false {
 
 		if a[j].Dnf == false {
-			result = (a[i].R1 + a[i].R2) < (a[j].R1 + a[j].R2)
+			result = TotalTime(a[i]) < TotalTime(a[j])
 		} else {
 			result = true // by convention, keep original order if both DNF
 		}
@@ -43,12 +50,5 @@ func ( a ResultArray) Less (i, j int) bool {
 		result = a[j].Dnf
 	}
 
-	fmt.Println("Compare " + a[i].Athlete + " (" + strconv.FormatFloat(a[i].R1 + a[i].R2,'f',-1,64) + ") and " + a[j].Athlete + " (" + strconv.FormatFloat(a[j].R1 + a[j].R2,'f',-1,64) + "), result ")
-
-	if result {
-		fmt.Println("i < j")
-	} else {
-		fmt.Println("i >= j")
-	}
 	return result
 }
