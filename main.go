@@ -10,9 +10,9 @@ import (
 
 func main() {
 
-	races := []string{ "164315", "164466", "164383", "164431" }
+	races := []string{ "165433", "165551", "165733"}
 
-	keyAthletes := []string{"Brain","Townshend","Haaijer","Stojsic"}
+	keyAthletes := []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt"}
 
 	raceResults := make ([]racedata.RaceResult,0,20)
 	
@@ -37,13 +37,15 @@ func main() {
 			}
 		}
 
+		fmt.Println()
+
 	}
 
 	allPoints := analysis.PointsAnalysis(raceResults, "U16")
 
 	for _, a := range allPoints {
 
-		fmt.Printf("%d %s %d %d %d\n", a.OverallRank, a.Athlete, a.SLPointTotal, a.GSPointTotal,  a.OverallPoints)
+		fmt.Printf("%d %s %s %d %d %d\n", a.OverallRank, a.Athlete, a.Club, a.SLPointTotal, a.GSPointTotal,  a.OverallPoints)
 	}
 
 }
