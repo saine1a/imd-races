@@ -7,14 +7,17 @@ import (
 	"strings"
 )
 
+var races = []string{ "165433", "165551", "165733"}
 
-func main() {
+var keyAthletes = []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt", "Jensen", "Combs", "Robertson", "Hooper", "Tanner"}
 
-	races := []string{ "165433", "165551", "165733"}
+var raceResults [] racedata.RaceResult
 
-	keyAthletes := []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt"}
+var allPoints []*analysis.Points
 
-	raceResults := make ([]racedata.RaceResult,0,20)
+func initRaces() {
+
+	raceResults = make ([]racedata.RaceResult,0,20)
 	
 	for r, race := range races {
 
@@ -41,11 +44,16 @@ func main() {
 
 	}
 
-	allPoints := analysis.PointsAnalysis(raceResults, "U16")
+	allPoints = analysis.PointsAnalysis(raceResults, "U16")
 
 	for _, a := range allPoints {
 
 		fmt.Printf("%d %s %s %d %d %d\n", a.OverallRank, a.Athlete, a.Club, a.SLPointTotal, a.GSPointTotal,  a.OverallPoints)
 	}
 
+}
+
+func main() {
+
+	initRaces()
 }
