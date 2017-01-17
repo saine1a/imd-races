@@ -3,57 +3,51 @@ package main
 import (
 	"imd-races/racedata"
 	"imd-races/analysis"
-	"fmt"
-	"strings"
+	"net/http"
+	"html/template"
 )
 
 var races = []string{ "165433", "165551", "165733"}
-
-var keyAthletes = []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt", "Jensen", "Combs", "Robertson", "Hooper", "Tanner"}
 
 var raceResults [] racedata.RaceResult
 
 var allPoints []*analysis.Points
 
+type Page struct {
+	Athletes []string
+	AllPoints []*analysis.Points
+}
+
+var page = Page{}
+
 func initRaces() {
 
+	page.Athletes = []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt", "Jensen", "Combs", "Robertson", "Hooper", "Tanner"}
+	
 	raceResults = make ([]racedata.RaceResult,0,20)
 	
-	for r, race := range races {
+	for _, race := range races {
 
 		raceResults = append(raceResults,racedata.GetRace(race))
 
-		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[r])
-	
-		u16Results := ageGroupResults["U16"]
-
-		for _, v := range u16Results {
-
-			for _, a := range keyAthletes {
-				if strings.Contains(v.Athlete,a) {			
-					if v.Dnf == false {
-						fmt.Printf("%s %s %d %s %d\n", raceResults[r].RaceName, raceResults[r].RaceType, v.AgePosition, v.Athlete, v.Points)
-					} else {
-					fmt.Printf("%s : %s %d\n", v.DnfReason, v.Athlete, v.Points)
-					}
-				}
-			}
-		}
-
-		fmt.Println()
-
+//		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[r])
 	}
 
-	allPoints = analysis.PointsAnalysis(raceResults, "U16")
-
-	for _, a := range allPoints {
-
-		fmt.Printf("%d %s %s %d %d %d\n", a.OverallRank, a.Athlete, a.Club, a.SLPointTotal, a.GSPointTotal,  a.OverallPoints)
-	}
-
+	page.AllPoints = analysis.PointsAnalysis(raceResults, "U16")
 }
+
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("home.html")
+	t.Execute(w, &page )
+}
+
 
 func main() {
 
 	initRaces()
+
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
+
 }

@@ -1,0 +1,8 @@
+<h1>IMD Races</h1>
+
+<table>
+<tr><th>Rank</th><th>Athlete</th><th>Points</th><th>SL</th><th>GS</th></tr>
+{{range .AllPoints}}
+<tr><td>{{.OverallRank}}</td><td>{{.Athlete}}</td><td>{{.OverallPoints}}</td><td>{{.SLPointTotal}}</td><td>{{.GSPointTotal}}</td></tr>
+{{end}}
+</table>
