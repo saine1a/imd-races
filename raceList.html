@@ -1,0 +1,8 @@
+<h1>IMD Races</h1>
+
+<table>
+  <tr><th>Race</th><th>Discipline</th></tr>
+  {{range .RaceResults}}
+  <tr><td>{{.RaceName}}</td><td>{{.RaceType}}</td></tr>
+  {{end}}
+  </table>
