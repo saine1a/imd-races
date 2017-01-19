@@ -45,6 +45,7 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 type Points struct {
 
 	Athlete string
+	Ussa string
 	Club string
 	GSPoints []int
 	SLPoints []int
@@ -115,6 +116,7 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 			}
 			
 			athletePoints[v.Ussa].Athlete = v.Athlete
+			athletePoints[v.Ussa].Ussa = v.Ussa
 			athletePoints[v.Ussa].Club = v.Club
 
 			if r.RaceType == "Slalom" {

@@ -2,6 +2,10 @@ table, th, td {
    border: 1px solid black;
 }
 
+.focusRow {
+    background-color: LightGreen !important;
+}
+
 .highlightRow { 
     background-color: LightBlue !important;
 }

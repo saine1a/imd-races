@@ -5,7 +5,6 @@ import (
 	"imd-races/analysis"
 	"net/http"
 	"html/template"
-	"fmt"
 )
 
 var races = []string{ "165433", "165551", "165733"}
@@ -14,7 +13,7 @@ var raceResults [] racedata.RaceResult
 
 var allPoints []*analysis.Points
 
-var focusAthlete = "Brain"
+var focusAthlete = "X6466759"
 
 func initRaces() {
 	
@@ -32,17 +31,17 @@ func initRaces() {
 
 
 type HomePage struct {
-	Athlete string
 	AllPoints []*analysis.Points
+	FocusAthlete string
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
-	t.Execute(w, &HomePage{Athlete: focusAthlete,AllPoints:allPoints} )
+	t.Execute(w, &HomePage{AllPoints:allPoints, FocusAthlete:focusAthlete} )
 }
 
 type RacePage struct {
-	Athlete string
+	FocusAthlete string
 	Result racedata.ResultArray
 }
 
@@ -50,8 +49,6 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("race.html")
 	raceId := r.URL.Query().Get("raceId")
 
-	fmt.Println(raceId)
-	
 	raceIndex := -1
 	
 	for i, race := range raceResults {
@@ -62,7 +59,7 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 
 	if raceIndex >= 0 {
 		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])["U16"]
-		t.Execute(w, &RacePage{Athlete:focusAthlete, Result:ageGroupResults} )
+		t.Execute(w, &RacePage{FocusAthlete:focusAthlete, Result:ageGroupResults} )
 	}
 }
 
@@ -75,6 +72,17 @@ func handleRaceList(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, &RaceListPage{RaceResults:raceResults} )
 }
 
+type AthletePage struct {
+	Athlete string
+}
+
+func handleAthlete(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("athlete.html")
+	athleteName := r.URL.Query().Get("athlete")
+
+	t.Execute(w, &AthletePage{Athlete:athleteName})
+}
+
 func main() {
 
 	initRaces()
@@ -82,6 +90,7 @@ func main() {
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources")))) 
 
 	http.HandleFunc("/", handleHome)
+	http.HandleFunc("/athlete", handleAthlete)
 	http.HandleFunc("/race", handleRace)	
 	http.HandleFunc("/races", handleRaceList)
 	http.ListenAndServe(":8080", nil)
