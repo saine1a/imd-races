@@ -1,0 +1,10 @@
+table, th, td {
+   border: 1px solid black;
+}
+
+.highlightRow { 
+    background-color: LightBlue !important;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2};
+

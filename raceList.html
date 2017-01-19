@@ -1,8 +1,8 @@
 <h1>IMD Races</h1>
 
-<table>
+<table cellpadding="10">
   <tr><th>Race</th><th>Discipline</th></tr>
   {{range .RaceResults}}
-  <tr><td>{{.RaceName}}</td><td>{{.RaceType}}</td></tr>
+  <tr><td><a href="race?raceId={{.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td></tr>
   {{end}}
   </table>

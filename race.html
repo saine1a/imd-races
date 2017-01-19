@@ -1,6 +1,14 @@
+<head>
+    <meta charset="utf-8">
+    <title>Race</title>
+    <link rel="stylesheet" type="text/css" href="resources/stylesheet.css">
+  </head>
+
 <h1>Race</h1>
 
-<p>{{.Athletes}}</p>
-<table>
-
+<table cellpadding="10">
+  <tr><th>Position</th><th>Bib</th><th>Athlete</th><th>Club</th><th>Points</th><th>R1</th><th>R2</th><th></th></tr>
+  {{range .Result}}
+  <tr {{if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.AgePosition}}</td><td>{{.Bib}}</td><td>{{.Athlete}}</td><td>{{.Club}}</td><td align="right">{{.Points}}</td><td align="right">{{.R1}}</td><td align="right">{{.R2}}</td><td>{{.DnfReason}}</td></tr>
+  {{end}}
 </table>

@@ -5,6 +5,7 @@ import (
 	"imd-races/analysis"
 	"net/http"
 	"html/template"
+	"fmt"
 )
 
 var races = []string{ "165433", "165551", "165733"}
@@ -13,7 +14,7 @@ var raceResults [] racedata.RaceResult
 
 var allPoints []*analysis.Points
 
-var keyAthletes = []string{"Brain","Townshend","Haaijer","Stojsic","Macuga","Grossniklaus", "Hunt", "Jensen", "Combs", "Robertson", "Hooper", "Tanner"}
+var focusAthlete = "Brain"
 
 func initRaces() {
 	
@@ -23,7 +24,7 @@ func initRaces() {
 
 		raceResults = append(raceResults,racedata.GetRace(race))
 
-//		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[r])
+
 	}
 
 	allPoints = analysis.PointsAnalysis(raceResults, "U16")
@@ -31,24 +32,38 @@ func initRaces() {
 
 
 type HomePage struct {
-	Athletes []string
+	Athlete string
 	AllPoints []*analysis.Points
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
-	t.Execute(w, &HomePage{Athletes: keyAthletes,AllPoints:allPoints} )
+	t.Execute(w, &HomePage{Athlete: focusAthlete,AllPoints:allPoints} )
 }
 
 type RacePage struct {
-	Athletes []string
-	RaceId string
+	Athlete string
+	Result racedata.ResultArray
 }
 
 func handleRace(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("race.html")
 	raceId := r.URL.Query().Get("raceId")
-	t.Execute(w, &RacePage{Athletes:keyAthletes, RaceId : raceId} )
+
+	fmt.Println(raceId)
+	
+	raceIndex := -1
+	
+	for i, race := range raceResults {
+		if race.RaceId == raceId {
+			raceIndex = i
+		}
+	}
+
+	if raceIndex >= 0 {
+		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])["U16"]
+		t.Execute(w, &RacePage{Athlete:focusAthlete, Result:ageGroupResults} )
+	}
 }
 
 type RaceListPage struct {
@@ -63,6 +78,8 @@ func handleRaceList(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	initRaces()
+
+	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources")))) 
 
 	http.HandleFunc("/", handleHome)
 	http.HandleFunc("/race", handleRace)	

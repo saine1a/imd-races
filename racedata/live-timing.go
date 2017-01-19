@@ -16,6 +16,8 @@ var client = &http.Client{}
 func GetRace(id string) RaceResult {
 
 	raceResult := RaceResult{}
+
+	raceResult.RaceId = id
 	
 	url, err := url.Parse("http://live-timing.com/includes/aj_race.php")
 
@@ -131,7 +133,7 @@ func GetRace(id string) RaceResult {
 			if ! strings.HasPrefix(components[1],"D")   {
 				f, err := strconv.ParseFloat(components[2],64)
 				if err == nil {
-					raceResult.Results[i-1].R1 = f
+					raceResult.Results[i-1].R1 = f / 1000
 				} else {
 					raceResult.Results[i-1].R1 = -1
 					raceResult.Results[i-1].Dnf = true
@@ -146,7 +148,7 @@ func GetRace(id string) RaceResult {
 			if ! strings.HasPrefix(components[1],"D") {
 				f, err := strconv.ParseFloat(components[2],64)
 				if err == nil {
-					raceResult.Results[i-1].R2 = f
+					raceResult.Results[i-1].R2 = f / 1000
 				} else {
 					raceResult.Results[i-1].R2 = -1
 					raceResult.Results[i-1].Dnf = true

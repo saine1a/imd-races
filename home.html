@@ -1,8 +1,15 @@
+<head>
+    <meta charset="utf-8">
+    <title>IMD Points</title>
+    <link rel="stylesheet" type="text/css" href="resources/stylesheet.css">
+  </head>
+
 <h1>IMD Points</h1>
 
-<table>
-<tr><th>Rank</th><th>Athlete</th><th>Points</th><th>SL</th><th>GS</th></tr>
+<table cellpadding="10">
+<tr><th>Rank</th><th>Athlete</th><th>Club</th><th>Points</th><th>SL</th><th>GS</th></tr>
 {{range .AllPoints}}
-<tr><td>{{.OverallRank}}</td><td>{{.Athlete}}</td><td>{{.OverallPoints}}</td><td>{{.SLPointTotal}}</td><td>{{.GSPointTotal}}</td></tr>
+<tr {{if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.OverallRank}}</td><td>{{.Athlete}}</td><td>{{.Club}}</td><td>{{.OverallPoints}}</td><td>{{.SLPointTotal}}</td><td>{{.GSPointTotal}}</td>
+</tr>
 {{end}}
 </table>

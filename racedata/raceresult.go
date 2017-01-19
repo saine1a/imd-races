@@ -24,6 +24,7 @@ type ResultArray []Result
 
 type RaceResult struct {
 	RaceName string
+	RaceId string
 	RaceType string
 	Results ResultArray
 }
