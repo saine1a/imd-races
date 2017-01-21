@@ -5,6 +5,7 @@ import (
 	"imd-races/analysis"
 	"net/http"
 	"html/template"
+	"fmt"
 )
 
 var races = []string{ "165433", "165551", "165733"}
@@ -14,6 +15,8 @@ var raceResults [] racedata.RaceResult
 var allPoints []*analysis.Points
 
 var focusAthlete = "X6466759"
+
+var ageGroup = "U16"
 
 func initRaces() {
 	
@@ -26,7 +29,7 @@ func initRaces() {
 
 	}
 
-	allPoints = analysis.PointsAnalysis(raceResults, "U16")
+	allPoints = analysis.PointsAnalysis(raceResults, ageGroup)
 }
 
 
@@ -42,6 +45,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 
 type RacePage struct {
 	FocusAthlete string
+	RaceType string
 	Result racedata.ResultArray
 }
 
@@ -50,16 +54,21 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 	raceId := r.URL.Query().Get("raceId")
 
 	raceIndex := -1
+	raceType := ""
 	
 	for i, race := range raceResults {
 		if race.RaceId == raceId {
 			raceIndex = i
+			raceType = race.RaceType
 		}
 	}
 
+	fmt.Println("Hello world")
+	fmt.Println(raceType)
+	
 	if raceIndex >= 0 {
-		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])["U16"]
-		t.Execute(w, &RacePage{FocusAthlete:focusAthlete, Result:ageGroupResults} )
+		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])[ageGroup]
+		t.Execute(w, &RacePage{RaceType:raceType, FocusAthlete:focusAthlete, Result:ageGroupResults} )
 	}
 }
 
@@ -74,13 +83,24 @@ func handleRaceList(w http.ResponseWriter, r *http.Request) {
 
 type AthletePage struct {
 	Athlete string
+	Points *analysis.Points
 }
 
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("athlete.html")
 	athleteName := r.URL.Query().Get("athlete")
 
-	t.Execute(w, &AthletePage{Athlete:athleteName})
+	athleteIndex := -1
+	
+	for i, athlete := range allPoints {
+		if athlete.Ussa == focusAthlete {
+			athleteIndex = i
+		}
+	}
+
+	if athleteIndex >= 0 {
+		t.Execute(w, &AthletePage{Athlete:athleteName,Points:allPoints[athleteIndex]})
+	}
 }
 
 func main() {

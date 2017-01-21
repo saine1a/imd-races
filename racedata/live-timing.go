@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"fmt"
 )
 
 var client = &http.Client{}
@@ -102,6 +103,8 @@ func GetRace(id string) RaceResult {
 //		fmt.Println("Skipping " + s.Text())
 	}
 
+	fmt.Printf("Race Type %s\n", raceResult.RaceType)
+
 	raceResult.Results = make([]Result, 0, 200)
 
 	var i = 0
@@ -116,6 +119,7 @@ func GetRace(id string) RaceResult {
 			raceResult.Results = append(raceResult.Results,Result{})
 			raceResult.Results[i-1].Dnf = false
 			raceResult.Results[i-1].Bib = components[1]
+			raceResult.Results[i-1].RaceType = raceResult.RaceType
 			break;
 	        case "m" :
 			raceResult.Results[i-1].Athlete = components[1]
@@ -145,20 +149,22 @@ func GetRace(id string) RaceResult {
 			}
 			break
 		case "r2" :
-			if ! strings.HasPrefix(components[1],"D") {
-				f, err := strconv.ParseFloat(components[2],64)
-				if err == nil {
-					raceResult.Results[i-1].R2 = f / 1000
+			if raceResult.RaceType != "Super-G" {
+				if ! strings.HasPrefix(components[1],"D") {
+					f, err := strconv.ParseFloat(components[2],64)
+					if err == nil {
+						raceResult.Results[i-1].R2 = f / 1000
+					} else {
+						raceResult.Results[i-1].R2 = -1
+						raceResult.Results[i-1].Dnf = true
+					}
 				} else {
-					raceResult.Results[i-1].R2 = -1
+					if raceResult.Results[i-1].DnfReason == "" {
+						raceResult.Results[i-1].DnfReason = components[1]
+					}
 					raceResult.Results[i-1].Dnf = true
+					raceResult.Results[i-1].R2 = -1
 				}
-			} else {
-				if raceResult.Results[i-1].DnfReason == "" {
-					raceResult.Results[i-1].DnfReason = components[1]
-				}
-				raceResult.Results[i-1].Dnf = true
-				raceResult.Results[i-1].R2 = -1
 			}
 			break
 		default :

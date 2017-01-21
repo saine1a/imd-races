@@ -14,10 +14,15 @@ type Result struct {
 	DnfReason string
 	AgePosition int
 	Points int
+	RaceType string
 }
 
 func TotalTime(result Result) float64 {
-	return result.R1 + result.R2
+	if result.RaceType == "Super-G" {
+		return result.R1
+	} else {
+		return result.R1 + result.R2
+	}
 }
 
 type ResultArray []Result

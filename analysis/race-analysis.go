@@ -53,6 +53,8 @@ type Points struct {
 	SLPointTotal int
 	OverallPoints int
 	OverallRank int
+	GSResults []racedata.Result
+	SLResults []racedata.Result
 }
 
 type PointsArray [] *Points
@@ -122,10 +124,12 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 			if r.RaceType == "Slalom" {
 				athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints,v.Points)
 				CalculatePoints(athletePoints[v.Ussa])
+				athletePoints[v.Ussa].SLResults = append(athletePoints[v.Ussa].SLResults,v)
 			} else {
 				if r.RaceType == "Giant Slalom" {
 					athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
 					CalculatePoints(athletePoints[v.Ussa])
+					athletePoints[v.Ussa].GSResults = append(athletePoints[v.Ussa].GSResults,v)
 				}
 			}
 
