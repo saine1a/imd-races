@@ -14,11 +14,11 @@ import (
 var client = &http.Client{}
 
 
-func GetRace(id string) RaceResult {
+func GetRace(definition RaceDefinition) RaceResult {
 
 	raceResult := RaceResult{}
 
-	raceResult.RaceId = id
+	raceResult.Definition = definition
 	
 	url, err := url.Parse("http://live-timing.com/includes/aj_race.php")
 
@@ -27,7 +27,7 @@ func GetRace(id string) RaceResult {
 	}
 
 	query := url.Query()
-	query.Set("r", id)
+	query.Set("r", definition.RaceId)
 	
 	query.Set("m", "1")
 	query.Set("u", "0")

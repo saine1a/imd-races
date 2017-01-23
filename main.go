@@ -5,10 +5,9 @@ import (
 	"imd-races/analysis"
 	"net/http"
 	"html/template"
-	"fmt"
 )
 
-var races = []string{ "165433", "165551", "165733"}
+var races = []racedata.RaceDefinition{ {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
 
 var raceResults [] racedata.RaceResult
 
@@ -57,18 +56,17 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 	raceType := ""
 	
 	for i, race := range raceResults {
-		if race.RaceId == raceId {
+		if race.Definition.RaceId == raceId {
 			raceIndex = i
 			raceType = race.RaceType
 		}
 	}
 
-	fmt.Println("Hello world")
-	fmt.Println(raceType)
-	
 	if raceIndex >= 0 {
 		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])[ageGroup]
 		t.Execute(w, &RacePage{RaceType:raceType, FocusAthlete:focusAthlete, Result:ageGroupResults} )
+	} else {
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
@@ -82,24 +80,27 @@ func handleRaceList(w http.ResponseWriter, r *http.Request) {
 }
 
 type AthletePage struct {
-	Athlete string
+	AthleteName string
+	Ussa string
+	RaceResults [] racedata.RaceResult
 	Points *analysis.Points
 }
 
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("athlete.html")
-	athleteName := r.URL.Query().Get("athlete")
+	athleteName := r.URL.Query().Get("name")
+	ussa := r.URL.Query().Get("ussa")
 
 	athleteIndex := -1
 	
 	for i, athlete := range allPoints {
-		if athlete.Ussa == focusAthlete {
+		if athlete.Ussa == ussa {
 			athleteIndex = i
 		}
 	}
 
 	if athleteIndex >= 0 {
-		t.Execute(w, &AthletePage{Athlete:athleteName,Points:allPoints[athleteIndex]})
+		t.Execute(w, &AthletePage{RaceResults:raceResults,Ussa:ussa,AthleteName:athleteName,Points:allPoints[athleteIndex]})
 	}
 }
 

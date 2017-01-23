@@ -121,18 +121,19 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 			athletePoints[v.Ussa].Ussa = v.Ussa
 			athletePoints[v.Ussa].Club = v.Club
 
-			if r.RaceType == "Slalom" {
-				athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints,v.Points)
-				CalculatePoints(athletePoints[v.Ussa])
-				athletePoints[v.Ussa].SLResults = append(athletePoints[v.Ussa].SLResults,v)
-			} else {
-				if r.RaceType == "Giant Slalom" {
-					athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
+			if r.Definition.Qualifier {
+				if r.RaceType == "Slalom" {
+					athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints,v.Points)
 					CalculatePoints(athletePoints[v.Ussa])
-					athletePoints[v.Ussa].GSResults = append(athletePoints[v.Ussa].GSResults,v)
+					athletePoints[v.Ussa].SLResults = append(athletePoints[v.Ussa].SLResults,v)
+				} else {
+					if r.RaceType == "Giant Slalom" {
+						athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
+						CalculatePoints(athletePoints[v.Ussa])
+						athletePoints[v.Ussa].GSResults = append(athletePoints[v.Ussa].GSResults,v)
+					}
 				}
 			}
-
 			
 		}
 	}

@@ -27,9 +27,14 @@ func TotalTime(result Result) float64 {
 
 type ResultArray []Result
 
+type RaceDefinition struct {
+	RaceId string
+	Qualifier bool
+}
+
 type RaceResult struct {
 	RaceName string
-	RaceId string
+	Definition RaceDefinition
 	RaceType string
 	Results ResultArray
 }

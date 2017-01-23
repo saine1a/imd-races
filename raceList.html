@@ -1,8 +1,14 @@
-<h1>IMD Races</h1>
+<head>
+    <meta charset="utf-8">
+    <title>IMD Race List</title>
+    <link rel="stylesheet" type="text/css" href="resources/stylesheet.css">
+</head>
+
+<h1>IMD Race List</h1>
 
 <table cellpadding="10">
-  <tr><th>Race</th><th>Discipline</th></tr>
+  <tr><th>Race</th><th>Discipline</th><th>Qualifier</th></tr>
   {{range .RaceResults}}
-  <tr><td><a href="race?raceId={{.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td></tr>
+  <tr {{if .Definition.Qualifier}}class="highlightRow"{{end}}><td><a href="race?raceId={{.Definition.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td><td>{{if .Definition.Qualifier}}Yes{{else}}No{{end}}</td></tr>
   {{end}}
   </table>

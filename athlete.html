@@ -1,9 +1,15 @@
 <head>
     <meta charset="utf-8">
-    <title>Athlete</title>
+    <title>Athlete Results</title>
     <link rel="stylesheet" type="text/css" href="resources/stylesheet.css">
-  </head>
+</head>
 
-<h1>Athlete {{.Athlete}}</h1>
+<h1>Race Results for {{.AthleteName}}</h1>
 
-<p>{{.Points}}</p>
+
+<table cellpadding="10">
+  <tr><th>Race</th><th>Discipline</th><th>Qualifier</th><th>Points</th></tr>
+  {{range $i, $e := .RaceResults}}
+  <tr {{if .Definition.Qualifier}}class="highlightRow"{{end}}><td><a href="race?raceId={{.Definition.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td><td>{{if .Definition.Qualifier}}Yes{{else}}No{{end}}</td><td></td></tr>
+  {{end}}
+  </table>
