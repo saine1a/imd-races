@@ -9,6 +9,7 @@ import (
 	"strings"
 	"strconv"
 	"fmt"
+	"sort"
 )
 
 var client = &http.Client{}
@@ -105,7 +106,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 
 	fmt.Printf("Race Type %s\n", raceResult.RaceType)
 
-	raceResult.Results = make([]Result, 0, 200)
+	raceResult.Results = make(ResultArray, 0, 200)
 
 	var i = 0
 
@@ -116,7 +117,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 		switch ( components[0] ) {
 		case "b" :
                         i += 1
-			raceResult.Results = append(raceResult.Results,Result{})
+			raceResult.Results = append(raceResult.Results,&Result{})
 			raceResult.Results[i-1].Dnf = false
 			raceResult.Results[i-1].Bib = components[1]
 			raceResult.Results[i-1].RaceType = raceResult.RaceType
@@ -168,6 +169,16 @@ func GetRace(definition RaceDefinition) RaceResult {
 			}
 			break
 		default :
+		}
+	}
+
+	sort.Sort(raceResult.Results)
+
+	for i, v := range raceResult.Results {
+		if i > 0 && TotalTime(raceResult.Results[i-1]) == TotalTime(v) { // Exact same time
+			raceResult.Results[i].Position = raceResult.Results[i-1].Position
+		} else {
+			raceResult.Results[i].Position = i+1
 		}
 	}
 

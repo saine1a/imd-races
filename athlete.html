@@ -7,8 +7,8 @@
 <h1>Race Results for {{.AthleteName}}</h1>
 
 <table cellpadding="10">
-  <tr><th>Race</th><th>Discipline</th><th>Qualifier</th><th>Position</th></tr>
+  <tr><th>Race</th><th>Discipline</th><th>Qualifier</th><th>Position</th><th>Age Position</th><th>Points</th></tr>
   {{range $i, $e := .RaceResults}}
-  <tr {{if .Definition.Qualifier}}class="highlightRow"{{end}}><td><a href="race?raceId={{.Definition.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td><td>{{if .Definition.Qualifier}}Yes{{else}}No{{end}}</td><td>{{$i}} {{index $.AthleteResults $i}}</td></tr>
+  <tr {{if .Definition.Qualifier}}class="highlightRow"{{end}}><td><a href="race?raceId={{.Definition.RaceId}}">{{.RaceName}}</a></td><td>{{.RaceType}}</td><td>{{if .Definition.Qualifier}}Yes{{else}}No{{end}}</td><td>{{(index $.AthleteResults $i).Position}}</td><td>{{(index $.AthleteResults $i).AgePosition}}</td><td>{{(index $.AthleteResults $i).Points}}</td></tr>
   {{end}}
   </table>

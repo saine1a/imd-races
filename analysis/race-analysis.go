@@ -53,8 +53,8 @@ type Points struct {
 	SLPointTotal int
 	OverallPoints int
 	OverallRank int
-	GSResults []racedata.Result
-	SLResults []racedata.Result
+	GSResults []*racedata.Result
+	SLResults []*racedata.Result
 }
 
 type PointsArray [] *Points

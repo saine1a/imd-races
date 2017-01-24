@@ -83,7 +83,7 @@ type AthletePage struct {
 	AthleteName string
 	Ussa string
 	RaceResults [] racedata.RaceResult
-	AthleteResults [] racedata.Result
+	AthleteResults [] *racedata.Result
 }
 
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +91,7 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	athleteName := r.URL.Query().Get("name")
 	ussa := r.URL.Query().Get("ussa")
 
-	athleteResults := make([] racedata.Result,0)
+	athleteResults := make([] *racedata.Result,0)
 	
 	for _, race := range raceResults {
 
@@ -106,7 +106,7 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if athleteFound == false {
-			athleteResults = append(athleteResults,racedata.Result{DnfReason:"DNS"})
+			athleteResults = append(athleteResults,&racedata.Result{DnfReason:"DNS"})
 		}
 	}
 
