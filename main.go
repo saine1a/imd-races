@@ -83,7 +83,7 @@ type AthletePage struct {
 	AthleteName string
 	Ussa string
 	RaceResults [] racedata.RaceResult
-	Points *analysis.Points
+	AthleteResults [] racedata.Result
 }
 
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
@@ -91,17 +91,26 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	athleteName := r.URL.Query().Get("name")
 	ussa := r.URL.Query().Get("ussa")
 
-	athleteIndex := -1
+	athleteResults := make([] racedata.Result,0)
 	
-	for i, athlete := range allPoints {
-		if athlete.Ussa == ussa {
-			athleteIndex = i
+	for _, race := range raceResults {
+
+		athleteFound := false
+		
+		for _, result := range race.Results {
+
+			if result.Ussa == ussa {
+				athleteResults = append(athleteResults,result)
+				athleteFound = true
+			}
+		}
+
+		if athleteFound == false {
+			athleteResults = append(athleteResults,racedata.Result{DnfReason:"DNS"})
 		}
 	}
 
-	if athleteIndex >= 0 {
-		t.Execute(w, &AthletePage{RaceResults:raceResults,Ussa:ussa,AthleteName:athleteName,Points:allPoints[athleteIndex]})
-	}
+	t.Execute(w, &AthletePage{RaceResults:raceResults,Ussa:ussa,AthleteName:athleteName, AthleteResults:athleteResults})
 }
 
 func main() {
