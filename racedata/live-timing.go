@@ -91,6 +91,12 @@ func GetRace(definition RaceDefinition) RaceResult {
 			
 			raceResult.RaceName = components[2]
 		}
+
+		if strings.HasPrefix(s.Text(), "hST") {
+			components := strings.Split(s.Text(),"=")
+
+			raceResult.RaceDate = components[1]
+		}
 			
 		if strings.HasPrefix(s.Text(),"hT") {
 			components := strings.Split(s.Text(),"=")

@@ -37,6 +37,7 @@ type RaceResult struct {
 	RaceName string
 	Definition RaceDefinition
 	RaceType string
+	RaceDate string
 	Results ResultArray
 }
 

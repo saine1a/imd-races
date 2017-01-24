@@ -43,8 +43,8 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 type RacePage struct {
+	RaceResult *racedata.RaceResult
 	FocusAthlete string
-	RaceType string
 	Result racedata.ResultArray
 }
 
@@ -53,18 +53,18 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 	raceId := r.URL.Query().Get("raceId")
 
 	raceIndex := -1
-	raceType := ""
+	raceResult := &racedata.RaceResult{}
 	
 	for i, race := range raceResults {
 		if race.Definition.RaceId == raceId {
 			raceIndex = i
-			raceType = race.RaceType
+			raceResult = &race
 		}
 	}
 
 	if raceIndex >= 0 {
 		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])[ageGroup]
-		t.Execute(w, &RacePage{RaceType:raceType, FocusAthlete:focusAthlete, Result:ageGroupResults} )
+		t.Execute(w, &RacePage{RaceResult:raceResult, FocusAthlete:focusAthlete, Result:ageGroupResults} )
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
