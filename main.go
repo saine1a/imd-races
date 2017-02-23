@@ -7,15 +7,15 @@ import (
 	"html/template"
 )
 
-var races = []racedata.RaceDefinition{ {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
-
-var raceResults [] racedata.RaceResult
-
-var allPoints []*analysis.Points
+var races = []racedata.RaceDefinition{ {RaceId:"170934", Qualifier:true}, {RaceId:"170728", Qualifier:true}, {RaceId:"170588", Qualifier:true}, {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
 
 var focusAthlete = "X6466759"
 
 var ageGroup = "U16"
+
+var raceResults [] racedata.RaceResult
+
+var allPoints []*analysis.Points
 
 func initRaces() {
 	
@@ -58,7 +58,7 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 	for i, race := range raceResults {
 		if race.Definition.RaceId == raceId {
 			raceIndex = i
-			raceResult = &race
+			raceResult = &(raceResults[i])
 		}
 	}
 
