@@ -7,9 +7,9 @@
 <h1>IMD Points</h1>
 
 <table cellpadding="10">
-<tr><th>Rank</th><th>Athlete</th><th>USSA</th><th>Club</th><th>Points</th><th>SL</th><th>GS</th></tr>
+<tr><th>Rank</th><th>Athlete</th><th>USSA</th><th>Club</th><th>Points</th><th>SL</th><th>GS</th><th>SG</th></tr>
 {{range .AllPoints}}
-<tr {{if eq .Ussa $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.OverallRank}}</td><td><a href="athlete?ussa={{.Ussa}}&name={{.Athlete}}">{{.Athlete}}</a></td><td>{{.Ussa}}</td><td>{{.Club}}</td><td>{{.OverallPoints}}</td><td>{{.SLPointTotal}}</td><td>{{.GSPointTotal}}</td>
+<tr {{if eq .Ussa $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.OverallRank}}</td><td><a href="athlete?ussa={{.Ussa}}&name={{.Athlete}}">{{.Athlete}}</a></td><td>{{.Ussa}}</td><td>{{.Club}}</td><td>{{.OverallPoints}}</td><td>{{.SLPointTotal}}</td><td>{{.GSPointTotal}}</td><td>{{.SGPointTotal}}</td>
 </tr>
 {{end}}
 </table>

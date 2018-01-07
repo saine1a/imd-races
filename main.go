@@ -7,7 +7,8 @@ import (
 	"html/template"
 )
 
-var races = []racedata.RaceDefinition{ {RaceId:"170934", Qualifier:true}, {RaceId:"170728", Qualifier:true}, {RaceId:"170588", Qualifier:true}, {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
+
+var races = []racedata.RaceDefinition{ {RaceId:"170934", Qualifier:true}, {RaceId:"170728", Qualifier:true}, {RaceId:"170588", Qualifier:true}, {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"172822", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
 
 var focusAthlete = "X6466759"
 
@@ -22,7 +23,6 @@ func initRaces() {
 	raceResults = make ([]racedata.RaceResult,0,20)
 	
 	for _, race := range races {
-
 		raceResults = append(raceResults,racedata.GetRace(race))
 
 

@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"fmt"
 	"sort"
+	"unicode"
 )
 
 var client = &http.Client{}
@@ -138,7 +139,13 @@ func GetRace(definition RaceDefinition) RaceResult {
 			raceResult.Results[i-1].Age = components[1]
 			break;
 		case "un" :
-			raceResult.Results[i-1].Ussa = components[1]
+			fmt.Println("%s  -   %s\n", components[1][:1], components[1])
+
+			if unicode.IsDigit(rune(components[1][:1])) {
+				raceResult.Results[i-1].Ussa = components[1]				
+			} else {
+				raceResult.Results[i-1].Ussa = components[1][1:len(components[1])]				
+			}
 			break
 		case "r1" :
 			if ! strings.HasPrefix(components[1],"D")   {

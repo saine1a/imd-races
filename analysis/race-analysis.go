@@ -49,12 +49,15 @@ type Points struct {
 	Club string
 	GSPoints []int
 	SLPoints []int
+	SGPoints []int
 	GSPointTotal int
 	SLPointTotal int
+	SGPointTotal int
 	OverallPoints int
 	OverallRank int
 	GSResults []*racedata.Result
 	SLResults []*racedata.Result
+	SGResults []*racedata.Result
 }
 
 type PointsArray [] *Points
@@ -98,7 +101,19 @@ func CalculatePoints(p *Points) {
 
 	p.GSPointTotal = gs
 
-	p.OverallPoints = gs + sl
+	sort.Sort(sort.Reverse(sort.IntSlice(p.SGPoints)))
+
+	sg := 0
+	
+	for i, pts := range p.SGPoints {
+		if i < 2 {
+			sg += pts
+		}
+	}
+
+	p.SGPointTotal = sg
+
+	p.OverallPoints = gs + sl + sg
 }
 
 func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points {
@@ -131,6 +146,12 @@ func PointsAnalysis ( races [] racedata.RaceResult, ageGroup string ) []*Points 
 						athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints,v.Points)
 						CalculatePoints(athletePoints[v.Ussa])
 						athletePoints[v.Ussa].GSResults = append(athletePoints[v.Ussa].GSResults,v)
+					} else {
+					if r.RaceType == "Super-G" {
+						athletePoints[v.Ussa].SGPoints = append(athletePoints[v.Ussa].SGPoints,v.Points)
+						CalculatePoints(athletePoints[v.Ussa])
+						athletePoints[v.Ussa].SGResults = append(athletePoints[v.Ussa].SGResults,v)
+					}
 					}
 				}
 			}
