@@ -1,27 +1,26 @@
 package racedata
 
 import (
+	"bufio"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
-	"log"
-	"io/ioutil"
-	"bufio"
-	"strings"
-	"strconv"
-	"fmt"
 	"sort"
+	"strconv"
+	"strings"
 	"unicode"
 )
 
 var client = &http.Client{}
-
 
 func GetRace(definition RaceDefinition) RaceResult {
 
 	raceResult := RaceResult{}
 
 	raceResult.Definition = definition
-	
+
 	url, err := url.Parse("http://live-timing.com/includes/aj_race.php")
 
 	if err != nil {
@@ -30,7 +29,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 
 	query := url.Query()
 	query.Set("r", definition.RaceId)
-	
+
 	query.Set("m", "1")
 	query.Set("u", "0")
 	url.RawQuery = query.Encode()
@@ -38,7 +37,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 	resp, err := client.Get(url.String())
 
 	defer resp.Body.Close()
-	
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,60 +54,59 @@ func GetRace(definition RaceDefinition) RaceResult {
 
 	s := bufio.NewScanner(strings.NewReader(string(body)))
 
-	split := func(data []byte, atEOF bool) (int,[]byte,error) {
+	split := func(data []byte, atEOF bool) (int, []byte, error) {
 
 		var i int
 
 		var b []byte
 
 		var advance int
-		var token [] byte
+		var token []byte
 		var err error
 
-		if ! strings.Contains(string(data),"|") {
+		if !strings.Contains(string(data), "|") {
 			return 0, nil, nil // request more data.
 		}
-		
-		for advance, token, err = bufio.ScanRunes(data, atEOF) ; err == nil && token != nil && string(token) != "|" && (i + advance ) < len(data) ; {
+
+		for advance, token, err = bufio.ScanRunes(data, atEOF); err == nil && token != nil && string(token) != "|" && (i+advance) < len(data); {
 
 			b = append(b, token...)
 
 			i += advance
 
-			if ( i <= len(data) ) {
+			if i <= len(data) {
 				advance, token, err = bufio.ScanRunes(data[i:len(data)], atEOF)
 			}
 		}
 
-		return i+advance, b, err
+		return i + advance, b, err
 	}
 
 	s.Split(split)
-	
-	for ; s.Scan() && s.Text() != "hE" ; {
+
+	for s.Scan() && s.Text() != "hE" {
 
 		if strings.HasPrefix(s.Text(), "hN") {
-			components := strings.Split(s.Text(),"=")
-			
+			components := strings.Split(s.Text(), "=")
+
 			raceResult.RaceName = components[2]
 		}
 
 		if strings.HasPrefix(s.Text(), "hST") {
-			components := strings.Split(s.Text(),"=")
+			components := strings.Split(s.Text(), "=")
 
 			raceResult.RaceDate = components[1]
 		}
-			
-		if strings.HasPrefix(s.Text(),"hT") {
-			components := strings.Split(s.Text(),"=")
+
+		if strings.HasPrefix(s.Text(), "hT") {
+			components := strings.Split(s.Text(), "=")
 
 			raceResult.RaceType = components[1]
 		}
 
-		
 		// Scan until we find "hE"
 
-//		fmt.Println("Skipping " + s.Text())
+		//		fmt.Println("Skipping " + s.Text())
 	}
 
 	fmt.Printf("Race Type %s\n", raceResult.RaceType)
@@ -117,39 +115,37 @@ func GetRace(definition RaceDefinition) RaceResult {
 
 	var i = 0
 
-	for ; s.Scan() && s.Text() != "endC" ; {
+	for s.Scan() && s.Text() != "endC" {
 
-		components := strings.Split(s.Text(),"=")
+		components := strings.Split(s.Text(), "=")
 
-		switch ( components[0] ) {
-		case "b" :
-                        i += 1
-			raceResult.Results = append(raceResult.Results,&Result{})
+		switch components[0] {
+		case "b":
+			i += 1
+			raceResult.Results = append(raceResult.Results, &Result{})
 			raceResult.Results[i-1].Dnf = false
 			raceResult.Results[i-1].Bib = components[1]
 			raceResult.Results[i-1].RaceType = raceResult.RaceType
-			break;
-	        case "m" :
+			break
+		case "m":
 			raceResult.Results[i-1].Athlete = components[1]
-			break;
-		case "c" :
+			break
+		case "c":
 			raceResult.Results[i-1].Club = components[1]
-			break;
-		case "s" :
+			break
+		case "s":
 			raceResult.Results[i-1].Age = components[1]
-			break;
-		case "un" :
-			fmt.Println("%s  -   %s\n", components[1][:1], components[1])
-
-			if unicode.IsDigit(rune(components[1][:1])) {
-				raceResult.Results[i-1].Ussa = components[1]				
+			break
+		case "un":
+			if unicode.IsDigit(rune(components[1][1])) {
+				raceResult.Results[i-1].Ussa = components[1]
 			} else {
-				raceResult.Results[i-1].Ussa = components[1][1:len(components[1])]				
+				raceResult.Results[i-1].Ussa = components[1][1:len(components[1])]
 			}
 			break
-		case "r1" :
-			if ! strings.HasPrefix(components[1],"D")   {
-				f, err := strconv.ParseFloat(components[2],64)
+		case "r1":
+			if !strings.HasPrefix(components[1], "D") {
+				f, err := strconv.ParseFloat(components[2], 64)
 				if err == nil {
 					raceResult.Results[i-1].R1 = f / 1000
 				} else {
@@ -162,10 +158,10 @@ func GetRace(definition RaceDefinition) RaceResult {
 				raceResult.Results[i-1].R1 = -1
 			}
 			break
-		case "r2" :
+		case "r2":
 			if raceResult.RaceType != "Super-G" {
-				if ! strings.HasPrefix(components[1],"D") {
-					f, err := strconv.ParseFloat(components[2],64)
+				if !strings.HasPrefix(components[1], "D") {
+					f, err := strconv.ParseFloat(components[2], 64)
 					if err == nil {
 						raceResult.Results[i-1].R2 = f / 1000
 					} else {
@@ -181,7 +177,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 				}
 			}
 			break
-		default :
+		default:
 		}
 	}
 
@@ -191,7 +187,7 @@ func GetRace(definition RaceDefinition) RaceResult {
 		if i > 0 && TotalTime(raceResult.Results[i-1]) == TotalTime(v) { // Exact same time
 			raceResult.Results[i].Position = raceResult.Results[i-1].Position
 		} else {
-			raceResult.Results[i].Position = i+1
+			raceResult.Results[i].Position = i + 1
 		}
 	}
 

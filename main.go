@@ -1,51 +1,48 @@
 package main
 
 import (
-	"imd-races/racedata"
-	"imd-races/analysis"
-	"net/http"
 	"html/template"
+	"imd-races/analysis"
+	"imd-races/racedata"
+	"net/http"
 )
 
+var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
 
-var races = []racedata.RaceDefinition{ {RaceId:"170934", Qualifier:true}, {RaceId:"170728", Qualifier:true}, {RaceId:"170588", Qualifier:true}, {RaceId:"165433", Qualifier:true}, {RaceId:"165551", Qualifier:true},  {RaceId:"165733", Qualifier:true}, {RaceId:"172822", Qualifier:true}, {RaceId:"167624", Qualifier:false}, {RaceId:"167441",Qualifier:false},{RaceId:"167304",Qualifier:false},{RaceId:"164466",Qualifier:false},{RaceId:"164431",Qualifier:false},{RaceId:"164383",Qualifier:false},{RaceId:"164315",Qualifier:false}}
+var focusAthlete = "I6465959"
 
-var focusAthlete = "X6466759"
+var ageGroup = "U14"
 
-var ageGroup = "U16"
-
-var raceResults [] racedata.RaceResult
+var raceResults []racedata.RaceResult
 
 var allPoints []*analysis.Points
 
 func initRaces() {
-	
-	raceResults = make ([]racedata.RaceResult,0,20)
-	
-	for _, race := range races {
-		raceResults = append(raceResults,racedata.GetRace(race))
 
+	raceResults = make([]racedata.RaceResult, 0, 20)
+
+	for _, race := range races {
+		raceResults = append(raceResults, racedata.GetRace(race))
 
 	}
 
 	allPoints = analysis.PointsAnalysis(raceResults, ageGroup)
 }
 
-
 type HomePage struct {
-	AllPoints []*analysis.Points
+	AllPoints    []*analysis.Points
 	FocusAthlete string
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
-	t.Execute(w, &HomePage{AllPoints:allPoints, FocusAthlete:focusAthlete} )
+	t.Execute(w, &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete})
 }
 
 type RacePage struct {
-	RaceResult *racedata.RaceResult
+	RaceResult   *racedata.RaceResult
 	FocusAthlete string
-	Result racedata.ResultArray
+	Result       racedata.ResultArray
 }
 
 func handleRace(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +51,7 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 
 	raceIndex := -1
 	raceResult := &racedata.RaceResult{}
-	
+
 	for i, race := range raceResults {
 		if race.Definition.RaceId == raceId {
 			raceIndex = i
@@ -64,26 +61,26 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 
 	if raceIndex >= 0 {
 		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])[ageGroup]
-		t.Execute(w, &RacePage{RaceResult:raceResult, FocusAthlete:focusAthlete, Result:ageGroupResults} )
+		t.Execute(w, &RacePage{RaceResult: raceResult, FocusAthlete: focusAthlete, Result: ageGroupResults})
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
 type RaceListPage struct {
-	RaceResults [] racedata.RaceResult
+	RaceResults []racedata.RaceResult
 }
 
 func handleRaceList(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("raceList.html")
-	t.Execute(w, &RaceListPage{RaceResults:raceResults} )
+	t.Execute(w, &RaceListPage{RaceResults: raceResults})
 }
 
 type AthletePage struct {
-	AthleteName string
-	Ussa string
-	RaceResults [] racedata.RaceResult
-	AthleteResults [] *racedata.Result
+	AthleteName    string
+	Ussa           string
+	RaceResults    []racedata.RaceResult
+	AthleteResults []*racedata.Result
 }
 
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
@@ -91,37 +88,37 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	athleteName := r.URL.Query().Get("name")
 	ussa := r.URL.Query().Get("ussa")
 
-	athleteResults := make([] *racedata.Result,0)
-	
+	athleteResults := make([]*racedata.Result, 0)
+
 	for _, race := range raceResults {
 
 		athleteFound := false
-		
+
 		for _, result := range race.Results {
 
 			if result.Ussa == ussa {
-				athleteResults = append(athleteResults,result)
+				athleteResults = append(athleteResults, result)
 				athleteFound = true
 			}
 		}
 
 		if athleteFound == false {
-			athleteResults = append(athleteResults,&racedata.Result{DnfReason:"DNS"})
+			athleteResults = append(athleteResults, &racedata.Result{DnfReason: "DNS"})
 		}
 	}
 
-	t.Execute(w, &AthletePage{RaceResults:raceResults,Ussa:ussa,AthleteName:athleteName, AthleteResults:athleteResults})
+	t.Execute(w, &AthletePage{RaceResults: raceResults, Ussa: ussa, AthleteName: athleteName, AthleteResults: athleteResults})
 }
 
 func main() {
 
 	initRaces()
 
-	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources")))) 
+	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 
 	http.HandleFunc("/", handleHome)
 	http.HandleFunc("/athlete", handleAthlete)
-	http.HandleFunc("/race", handleRace)	
+	http.HandleFunc("/race", handleRace)
 	http.HandleFunc("/races", handleRaceList)
 	http.ListenAndServe(":8080", nil)
 
