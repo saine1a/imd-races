@@ -179,6 +179,10 @@ func GetRace(definition RaceDefinition) RaceResult {
 			break
 		default:
 		}
+
+		if IsDnf(raceResult.Results[i-1], definition.RaceId) {
+			raceResult.Results[i-1].Dnf = true
+		}
 	}
 
 	sort.Sort(raceResult.Results)

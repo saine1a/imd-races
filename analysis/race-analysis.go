@@ -1,7 +1,6 @@
 package analysis
 
 import (
-	"fmt"
 	"imd-races/racedata"
 	"sort"
 )
@@ -9,29 +8,6 @@ import (
 var points = []int{100, 80, 60, 50, 45, 40, 36, 32, 29, 26, 24, 22, 20, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
 
 var u14Points = []int{200, 175, 155, 140, 128, 118, 110, 103, 96, 90, 84, 79, 74, 70, 66, 63, 60, 57, 54, 51, 49, 47, 45, 43, 41, 39, 37, 35, 33, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
-
-type Dnf struct {
-	Ussa   string
-	RaceId string
-}
-
-var dnfOverrides = []Dnf{{RaceId: "178251", Ussa: "I6779097"}}
-
-func isDnf(result *racedata.Result, raceId string) bool {
-
-	if result.Dnf == true {
-		return true
-	}
-
-	for _, v := range dnfOverrides {
-		if v.RaceId == raceId && v.Ussa == result.Ussa {
-			fmt.Println("DNF Override for %s %s\n", result.Athlete, raceId)
-			return true
-		}
-	}
-
-	return false
-}
 
 func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultArray {
 
@@ -47,45 +23,32 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 
 		resultArray := ageGroupMap[k]
 
-		pos := 0
-
-		agePosns := make(map[string]int)
-
 		for i, v := range resultArray {
 
-			if !isDnf(v, results.Definition.RaceId) {
-				pos = pos + 1
-
-				agePos, found := agePosns[v.Age]
-
-				if !found {
-					agePos = 0
-				}
-
-				agePos = agePos + 1
-
-				agePosns[v.Age] = agePos
-
+			if resultArray[i].Dnf == true {
+				resultArray[i].Position = 999
+				resultArray[i].AgePosition = 999
+			} else {
 				if i > 0 && racedata.TotalTime(resultArray[i-1]) == racedata.TotalTime(v) { // Exact same time
 					resultArray[i].Position = resultArray[i-1].Position
 					resultArray[i].AgePosition = resultArray[i-1].AgePosition
 				} else {
-					resultArray[i].Position = pos
-					resultArray[i].AgePosition = agePos
+					resultArray[i].AgePosition = i + 1
+					resultArray[i].AgePosition = i + 1
 				}
+			}
 
-				if v.Age == "U14" {
-					if resultArray[i].AgePosition <= 60 {
-						resultArray[i].Points = u14Points[resultArray[i].AgePosition-1]
-					} else {
-						resultArray[i].Points = 0
-					}
+			if v.Age == "U14" {
+				if resultArray[i].AgePosition <= 60 {
+					resultArray[i].Points = u14Points[resultArray[i].AgePosition-1]
 				} else {
-					if resultArray[i].AgePosition <= 30 {
-						resultArray[i].Points = points[resultArray[i].AgePosition-1]
-					} else {
-						resultArray[i].Points = 0
-					}
+					resultArray[i].Points = 0
+				}
+			} else {
+				if resultArray[i].AgePosition <= 30 {
+					resultArray[i].Points = points[resultArray[i].AgePosition-1]
+				} else {
+					resultArray[i].Points = 0
 				}
 			}
 		}
