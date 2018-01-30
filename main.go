@@ -7,11 +7,14 @@ import (
 	"net/http"
 )
 
-var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
+//var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
+var races = []racedata.RaceDefinition{{RaceId: "181356", Qualifier: true}, {RaceId: "181519", Qualifier: true}}
 
-var focusAthlete = "I6465959"
+//var focusAthlete = "I6465959"
+var focusAthlete = "X6466759"
 
-var ageGroup = "U14"
+//var ageGroup = "U14"
+var ageGroup = "U16"
 
 var raceResults []racedata.RaceResult
 
