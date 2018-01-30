@@ -1,21 +1,19 @@
 package racedata
 
-
 type Result struct {
-
-	Bib string
-	Athlete string
-	Club string
-	Age string
-	Ussa string
-	R1 float64
-	R2 float64
-	Dnf bool
-	DnfReason string
+	Bib         string
+	Athlete     string
+	Club        string
+	Age         string
+	Ussa        string
+	R1          float64
+	R2          float64
+	Dnf         bool
+	DnfReason   string
 	AgePosition int
-	Position int
-	Points int
-	RaceType string
+	Position    int
+	Points      int
+	RaceType    string
 }
 
 func TotalTime(result *Result) float64 {
@@ -28,28 +26,36 @@ func TotalTime(result *Result) float64 {
 
 type ResultArray []*Result
 
+type RaceSiteType int32
+
+const (
+	USSA       RaceSiteType = 0
+	LIVETIMING RaceSiteType = 1
+)
+
 type RaceDefinition struct {
-	RaceId string
-	Qualifier bool
+	RaceId     string
+	Qualifier  bool
+	TimingSite RaceSiteType
 }
 
 type RaceResult struct {
-	RaceName string
+	RaceName   string
 	Definition RaceDefinition
-	RaceType string
-	RaceDate string
-	Results ResultArray
+	RaceType   string
+	RaceDate   string
+	Results    ResultArray
 }
 
-func ( a ResultArray) Len() int {
+func (a ResultArray) Len() int {
 	return len(a)
 }
 
-func ( a ResultArray) Swap (i, j int) {
+func (a ResultArray) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-func ( a ResultArray) Less (i, j int) bool {
+func (a ResultArray) Less(i, j int) bool {
 
 	var result bool
 

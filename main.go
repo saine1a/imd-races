@@ -8,7 +8,7 @@ import (
 )
 
 //var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
-var races = []racedata.RaceDefinition{{RaceId: "181356", Qualifier: true}, {RaceId: "181519", Qualifier: true}}
+var races = []racedata.RaceDefinition{{RaceId: "181356", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "181519", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
 
 //var focusAthlete = "I6465959"
 var focusAthlete = "X6466759"
@@ -25,7 +25,12 @@ func initRaces() {
 	raceResults = make([]racedata.RaceResult, 0, 20)
 
 	for _, race := range races {
-		raceResults = append(raceResults, racedata.GetRace(race))
+		switch race.TimingSite {
+		case racedata.LIVETIMING:
+			raceResults = append(raceResults, racedata.GetLiveTimingResults(race))
+		case racedata.USSA:
+			raceResults = append(raceResults, racedata.GetUSSAResults(race))
+		}
 
 	}
 

@@ -13,9 +13,7 @@ import (
 	"unicode"
 )
 
-var client = &http.Client{}
-
-func GetRace(definition RaceDefinition) RaceResult {
+func GetLiveTimingResults(definition RaceDefinition) RaceResult {
 
 	raceResult := RaceResult{}
 
