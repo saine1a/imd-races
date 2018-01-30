@@ -11,7 +11,8 @@ import (
 var races = []racedata.RaceDefinition{{RaceId: "181356", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "181519", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
 
 //var focusAthlete = "I6465959"
-var focusAthlete = "X6466759"
+//var focusAthlete = "X6466759"
+var focusAthlete = "Brain, Rebekah"
 
 //var ageGroup = "U14"
 var ageGroup = "U16"

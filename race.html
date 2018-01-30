@@ -9,6 +9,6 @@
 <table cellpadding="10">
   <tr><th>Position</th><th>Bib</th><th>Athlete</th><th>USSA</th><th>Club</th><th>Points</th><th>R1</th>{{if eq .RaceResult.RaceType "Super-G"}}{{else}}<th>R2</th>{{end}}<th></th></tr>
   {{range .Result}}
-  <tr {{if eq .Ussa $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.AgePosition}}</td><td>{{.Bib}}</td><td>{{.Athlete}}</td><td>{{.Ussa}}</td><td>{{.Club}}</td><td align="right">{{.Points}}</td><td align="right">{{.R1}}</td>{{if eq $.RaceResult.RaceType "Super-G"}}{{else}}<td align="right">{{.R2}}</td>{{end}}<td>{{.DnfReason}}</td></tr>
+  <tr {{if eq .Athlete $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCST"}}class="highlightRow"{{end}}><td>{{.AgePosition}}</td><td>{{.Bib}}</td><td>{{.Athlete}}</td><td>{{.Ussa}}</td><td>{{.Club}}</td><td align="right">{{.Points}}</td><td align="right">{{.R1}}</td>{{if eq $.RaceResult.RaceType "Super-G"}}{{else}}<td align="right">{{.R2}}</td>{{end}}<td>{{.DnfReason}}</td></tr>
   {{end}}
 </table>

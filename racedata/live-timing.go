@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -183,15 +182,7 @@ func GetLiveTimingResults(definition RaceDefinition) RaceResult {
 		}
 	}
 
-	sort.Sort(raceResult.Results)
-
-	for i, v := range raceResult.Results {
-		if i > 0 && TotalTime(raceResult.Results[i-1]) == TotalTime(v) { // Exact same time
-			raceResult.Results[i].Position = raceResult.Results[i-1].Position
-		} else {
-			raceResult.Results[i].Position = i + 1
-		}
-	}
+	raceResult.Results.SortResults()
 
 	return raceResult
 }

@@ -1,5 +1,7 @@
 package racedata
 
+import "sort"
+
 type Result struct {
 	Bib         string
 	Athlete     string
@@ -71,4 +73,18 @@ func (a ResultArray) Less(i, j int) bool {
 	}
 
 	return result
+}
+
+// Sort function
+func (results *ResultArray) SortResults() {
+
+	sort.Sort(results)
+
+	for i, v := range *results {
+		if i > 0 && TotalTime((*results)[i-1]) == TotalTime(v) { // Exact same time
+			(*results)[i].Position = (*results)[i-1].Position
+		} else {
+			(*results)[i].Position = i + 1
+		}
+	}
 }

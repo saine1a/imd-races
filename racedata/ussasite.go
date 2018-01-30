@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -25,6 +26,19 @@ type USSARace struct {
 	Location   string
 	Sport      string
 	Division   string
+}
+
+type USSAResult struct {
+	FinishPlace string
+	AthleteID   string
+	Athlete     string `csvField:"Full Name"`
+	BirthYear   int64
+	Division    string `csvField:"Division/Country"`
+	R1          string `csvField:"FirstRun"`
+	R2          string `csvField:"SecondRun"`
+	RaceTime    string
+	RacePoints  float64
+	USSAResult  float64
 }
 
 func GetUSSAResults(definition RaceDefinition) RaceResult {
@@ -78,18 +92,11 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 
 	// Map CSV headers
 	record, err = csvReader.Read() // header line
-	fmt.Println(len(record))
 	raceInfoHeader := csvmapper.MapHeader(record, reflect.TypeOf(USSARace{}))
 
 	// Now read money line
 	record, err = csvReader.Read() // money line
-	fmt.Println(len(record))
-	fmt.Println(csvReader.FieldsPerRecord)
 	raceInfo := USSARace{}
-
-	for _, r := range record {
-		fmt.Println(r)
-	}
 
 	raceInfoHeader.ParseRecord(record, &raceInfo, OurDateFormat)
 
@@ -100,50 +107,112 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 	} else {
 		log.Fatal(err)
 	}
-	/*
-		// Now get results
 
-		url, err = url.Parse("https://my.ussa.org/ussa-tools/events/results/U0173/2018")
+	// Now get results
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	url, err = url.Parse("https://my.ussa.org/ussa-tools/events/results/U0173/2018")
 
-		query = url.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		query.Set("csv", "2")
-		url.RawQuery = query.Encode()
+	query = url.Query()
 
-		resp, err = client.Get(url.String())
+	query.Set("csv", "2")
+	url.RawQuery = query.Encode()
 
-		defer resp.Body.Close()
+	resp, err = client.Get(url.String())
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	defer resp.Body.Close()
 
-		if resp.StatusCode != http.StatusOK {
-			log.Fatal(resp.StatusCode)
-		}
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		body, err = ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		log.Fatal(resp.StatusCode)
+	}
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	body, err = ioutil.ReadAll(resp.Body)
 
-		csvReader = csv.NewReader(strings.NewReader(string(body)))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		record, err = csvReader.Read() // first line
-		record, err = csvReader.Read() // second line
+	csvReader = csv.NewReader(strings.NewReader(string(body)))
 
-		if err == nil {
-			raceResult.RaceName = record[1]
-			raceResult.RaceType = record[3]
-			raceResult.RaceDate = record[2]
+	// Skip first line
+	record, err = csvReader.Read()
+	csvReader.FieldsPerRecord = 0 // Hack to reset csvReader
+
+	record, err = csvReader.Read() // second line = headers
+	raceResultHeader := csvmapper.MapHeader(record, reflect.TypeOf(USSAResult{}))
+
+	eof := false
+
+	raceResult.Results = make(ResultArray, 0, 200)
+
+	for !eof {
+
+		record, err = csvReader.Read()
+
+		if err != nil || len(record) == 0 {
+			eof = true
 		} else {
-			log.Fatal(err)
+			result := USSAResult{}
+			raceResultHeader.ParseRecord(record, &result, OurDateFormat)
+			modifiedResult := Result{}
+
+			modifiedResult.Age = calcAge(result.BirthYear)
+			modifiedResult.Athlete = result.Athlete
+			modifiedResult.Ussa = result.AthleteID
+			modifiedResult.Bib = "-"
+			modifiedResult.Club = "-"
+			modifiedResult.Dnf = (strings.HasPrefix(result.FinishPlace, "DNF"))
+			if modifiedResult.Dnf {
+				modifiedResult.Position = 999
+				modifiedResult.DnfReason = result.FinishPlace
+			} else {
+				modifiedResult.Position, _ = strconv.Atoi(result.FinishPlace)
+				fmt.Println(modifiedResult.Position)
+			}
+			modifiedResult.R1 = convTime(result.R1)
+			modifiedResult.R2 = convTime(result.R2)
+			modifiedResult.RaceType = raceResult.RaceType
+			raceResult.Results = append(raceResult.Results, &modifiedResult)
 		}
-	*/
+	}
+
+	raceResult.Results.SortResults()
+
 	return raceResult
+}
+
+func calcAge(year int64) string {
+
+	switch year {
+	case 2002:
+		return "U16"
+	case 2003:
+		return "U16"
+	case 2004:
+		return "U14"
+	case 2005:
+		return "U14"
+	default:
+		return "-"
+
+	}
+}
+
+func convTime(raceTime string) float64 {
+	theTime, err :=
+		time.Parse("04:05.00", raceTime)
+
+	if err != nil {
+		return 999
+	} else {
+		value := float64(theTime.Minute())*60.0 + float64(theTime.Second()) + float64(theTime.Nanosecond())/1000000000.0
+		return value
+	}
 }

@@ -1,6 +1,7 @@
 package analysis
 
 import (
+	"fmt"
 	"imd-races/racedata"
 	"sort"
 )
@@ -59,7 +60,6 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 
 type Points struct {
 	Athlete       string
-	Ussa          string
 	Club          string
 	GSPoints      []int
 	SLPoints      []int
@@ -142,29 +142,30 @@ func PointsAnalysis(races []racedata.RaceResult, ageGroup string) []*Points {
 
 		for _, v := range ageSpecificResults {
 
-			if athletePoints[v.Ussa] == nil {
-				athletePoints[v.Ussa] = &Points{}
+			if athletePoints[v.Athlete] == nil {
+				athletePoints[v.Athlete] = &Points{}
 			}
 
-			athletePoints[v.Ussa].Athlete = v.Athlete
-			athletePoints[v.Ussa].Ussa = v.Ussa
-			athletePoints[v.Ussa].Club = v.Club
+			athletePoints[v.Athlete].Athlete = v.Athlete
+			athletePoints[v.Athlete].Club = v.Club
 
 			if r.Definition.Qualifier {
 				if r.RaceType == "Slalom" {
-					athletePoints[v.Ussa].SLPoints = append(athletePoints[v.Ussa].SLPoints, v.Points)
-					CalculatePoints(athletePoints[v.Ussa])
-					athletePoints[v.Ussa].SLResults = append(athletePoints[v.Ussa].SLResults, v)
+					athletePoints[v.Athlete].SLPoints = append(athletePoints[v.Athlete].SLPoints, v.Points)
+					CalculatePoints(athletePoints[v.Athlete])
+					athletePoints[v.Athlete].SLResults = append(athletePoints[v.Athlete].SLResults, v)
 				} else {
 					if r.RaceType == "Giant Slalom" {
-						athletePoints[v.Ussa].GSPoints = append(athletePoints[v.Ussa].GSPoints, v.Points)
-						CalculatePoints(athletePoints[v.Ussa])
-						athletePoints[v.Ussa].GSResults = append(athletePoints[v.Ussa].GSResults, v)
+						athletePoints[v.Athlete].GSPoints = append(athletePoints[v.Athlete].GSPoints, v.Points)
+						CalculatePoints(athletePoints[v.Athlete])
+						athletePoints[v.Athlete].GSResults = append(athletePoints[v.Athlete].GSResults, v)
 					} else {
 						if r.RaceType == "Super-G" {
-							athletePoints[v.Ussa].SGPoints = append(athletePoints[v.Ussa].SGPoints, v.Points)
-							CalculatePoints(athletePoints[v.Ussa])
-							athletePoints[v.Ussa].SGResults = append(athletePoints[v.Ussa].SGResults, v)
+							athletePoints[v.Athlete].SGPoints = append(athletePoints[v.Athlete].SGPoints, v.Points)
+							CalculatePoints(athletePoints[v.Athlete])
+							athletePoints[v.Athlete].SGResults = append(athletePoints[v.Athlete].SGResults, v)
+						} else {
+							fmt.Println("UNKNOWN RACE TYPE " + r.RaceType)
 						}
 					}
 				}
