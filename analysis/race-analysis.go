@@ -61,6 +61,7 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 type Points struct {
 	Athlete       string
 	Club          string
+	BirthYear	  string
 	GSPoints      []int
 	SLPoints      []int
 	SGPoints      []int
@@ -148,6 +149,7 @@ func PointsAnalysis(races []racedata.RaceResult, ageGroup string) []*Points {
 
 			athletePoints[v.Athlete].Athlete = v.Athlete
 			athletePoints[v.Athlete].Club = v.Club
+			athletePoints[v.Athlete].BirthYear = v.BirthYear
 
 			if r.Definition.Qualifier {
 				if r.RaceType == "Slalom" {
@@ -156,11 +158,9 @@ func PointsAnalysis(races []racedata.RaceResult, ageGroup string) []*Points {
 					athletePoints[v.Athlete].SLResults = append(athletePoints[v.Athlete].SLResults, v)
 				} else {
 					if r.RaceType == "Giant Slalom" {
-						fmt.Printf("%s %d\n", v.Athlete, v.Points)
 						athletePoints[v.Athlete].GSPoints = append(athletePoints[v.Athlete].GSPoints, v.Points)
 						CalculatePoints(athletePoints[v.Athlete])
 						athletePoints[v.Athlete].GSResults = append(athletePoints[v.Athlete].GSResults, v)
-						fmt.Println(athletePoints[v.Athlete].GSPoints)
 					} else {
 						if r.RaceType == "Super-G" || r.RaceType == "Super G" {
 							athletePoints[v.Athlete].SGPoints = append(athletePoints[v.Athlete].SGPoints, v.Points)

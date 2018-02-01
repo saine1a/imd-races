@@ -10,12 +10,14 @@ type Result struct {
 	Ussa        string
 	R1          float64
 	R2          float64
+	TT   		float64
 	Dnf         bool
 	DnfReason   string
 	AgePosition int
 	Position    int
 	Points      int
 	RaceType    string
+	BirthYear   string
 }
 
 func TotalTime(result *Result) float64 {
@@ -86,5 +88,7 @@ func (results *ResultArray) SortResults() {
 		} else {
 			(*results)[i].Position = i + 1
 		}
+
+		(*results)[i].TT = TotalTime((*results)[i])
 	}
 }

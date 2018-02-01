@@ -7,7 +7,21 @@ import (
 	"net/http"
 )
 
-//var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
+var focusAthlete = "Brain, Jonathan"
+var ageGroup = "U14"
+
+//var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "178336", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "178251", Qualifier: true, TimingSite: racedata.LIVETIMING}}
+var races = []racedata.RaceDefinition{
+	{RaceId: "U0637", Qualifier: true, TimingSite: racedata.USSA}, 
+	{RaceId: "U0638", Qualifier: true, TimingSite: racedata.USSA}, 
+	{RaceId: "U0634", Qualifier: true, TimingSite: racedata.USSA}}
+
+/* REBEKAH
+
+var focusAthlete = "Brain, Rebekah"
+
+var ageGroup = "U16"
+
 var races = []racedata.RaceDefinition{
 	{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA},
 	{RaceId: "U0175", Qualifier: true, TimingSite: racedata.USSA},
@@ -18,16 +32,9 @@ var races = []racedata.RaceDefinition{
 	{RaceId: "U0643", Qualifier: false, TimingSite: racedata.USSA},
 	{RaceId: "U0645", Qualifier: false, TimingSite: racedata.USSA},
 	{RaceId: "U0647", Qualifier: false, TimingSite: racedata.USSA},
-}
+}*/
 
 //var races = []racedata.RaceDefinition{{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
-
-//var focusAthlete = "I6465959"
-//var focusAthlete = "X6466759"
-var focusAthlete = "Brain, Rebekah"
-
-//var ageGroup = "U14"
-var ageGroup = "U16"
 
 var raceResults []racedata.RaceResult
 

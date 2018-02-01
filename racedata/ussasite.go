@@ -166,6 +166,7 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 			modifiedResult := Result{}
 
 			modifiedResult.Age = calcAge(result.BirthYear)
+			modifiedResult.BirthYear = fmt.Sprintf("%d",result.BirthYear)
 			modifiedResult.Athlete = result.Athlete
 			modifiedResult.Ussa = result.AthleteID
 			modifiedResult.Bib = "-"
