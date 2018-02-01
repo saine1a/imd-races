@@ -8,7 +8,19 @@ import (
 )
 
 //var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true}, {RaceId: "178336", Qualifier: true}, {RaceId: "178251", Qualifier: true}}
-var races = []racedata.RaceDefinition{{RaceId: "181356", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "181519", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
+var races = []racedata.RaceDefinition{
+	{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA},
+	{RaceId: "U0175", Qualifier: true, TimingSite: racedata.USSA},
+	{RaceId: "U0167", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0165", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0171", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0169", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0643", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0645", Qualifier: false, TimingSite: racedata.USSA},
+	{RaceId: "U0647", Qualifier: false, TimingSite: racedata.USSA},
+}
+
+//var races = []racedata.RaceDefinition{{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
 
 //var focusAthlete = "I6465959"
 //var focusAthlete = "X6466759"
@@ -45,6 +57,7 @@ type HomePage struct {
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
+
 	t.Execute(w, &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete})
 }
 
@@ -95,7 +108,6 @@ type AthletePage struct {
 func handleAthlete(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("athlete.html")
 	athleteName := r.URL.Query().Get("name")
-	ussa := r.URL.Query().Get("ussa")
 
 	athleteResults := make([]*racedata.Result, 0)
 
@@ -105,7 +117,7 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 
 		for _, result := range race.Results {
 
-			if result.Ussa == ussa {
+			if result.Athlete == athleteName {
 				athleteResults = append(athleteResults, result)
 				athleteFound = true
 			}
@@ -116,7 +128,7 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	t.Execute(w, &AthletePage{RaceResults: raceResults, Ussa: ussa, AthleteName: athleteName, AthleteResults: athleteResults})
+	t.Execute(w, &AthletePage{RaceResults: raceResults, AthleteName: athleteName, AthleteResults: athleteResults})
 }
 
 func main() {

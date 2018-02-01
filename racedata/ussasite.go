@@ -49,7 +49,9 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 
 	// first get race definition info
 
-	url, err := url.Parse("https://my.ussa.org/ussa-tools/events/results/U0173/2018")
+	urlString := fmt.Sprintf("https://my.ussa.org/ussa-tools/events/results/%s/2018", definition.RaceId)
+
+	url, err := url.Parse(urlString)
 
 	if err != nil {
 		log.Fatal(err)
@@ -110,7 +112,7 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 
 	// Now get results
 
-	url, err = url.Parse("https://my.ussa.org/ussa-tools/events/results/U0173/2018")
+	url, err = url.Parse(urlString)
 
 	if err != nil {
 		log.Fatal(err)
@@ -174,7 +176,6 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 				modifiedResult.DnfReason = result.FinishPlace
 			} else {
 				modifiedResult.Position, _ = strconv.Atoi(result.FinishPlace)
-				fmt.Println(modifiedResult.Position)
 			}
 			modifiedResult.R1 = convTime(result.R1)
 			modifiedResult.R2 = convTime(result.R2)
