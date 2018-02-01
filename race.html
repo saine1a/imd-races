@@ -7,8 +7,8 @@
 <h1>Race {{.RaceResult.RaceName}} {{.RaceResult.RaceType}} {{.RaceResult.RaceDate}}</h1>
 
 <table cellpadding="10">
-  <tr><th>Position</th><th>Bib</th><th>Athlete</th><th>USSA</th><th>Club</th><th>Points</th><th>R1</th>{{if eq .RaceResult.RaceType "Super-G"}}{{else}}<th>R2</th><th>Total time</th>{{end}}<th>Birth Year</th></th><th></th></tr>
+  <tr><th>Position</th><th>Bib</th><th>Athlete</th><th>USSA</th><th>Club</th><th>Points</th><th>R1</th>{{if eq .RaceResult.RaceType "Super-G"}}{{else}}<th>R2</th><th>Total time</th>{{end}}<th>Birth Year</th><th>USSA points</th></th><th></th></tr>
   {{range .Result}}
-  <tr {{if eq .Athlete $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCSS"}}class="highlightRow"{{end}}><td>{{.AgePosition}}</td><td>{{.Bib}}</td><td>{{.Athlete}}</td><td>{{.Ussa}}</td><td>{{.Club}}</td><td align="right">{{.Points}}</td><td align="right">{{printf "%.2f" .R1}}</td>{{if eq $.RaceResult.RaceType "Super-G"}}{{else}}<td align="right">{{printf "%.2f" .R2}}</td><td align="right">{{printf "%.2f" .TT}}</td>{{end}}<td>{{.BirthYear}}</td><td>{{.DnfReason}}</td></tr>
+  <tr {{if eq .Athlete $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCSS"}}class="highlightRow"{{end}}><td>{{.AgePosition}}</td><td>{{.Bib}}</td><td>{{.Athlete}}</td><td>{{.Ussa}}</td><td>{{.Club}}</td><td align="right">{{.Points}}</td><td align="right">{{printf "%.2f" .R1}}</td>{{if eq $.RaceResult.RaceType "Super-G"}}{{else}}<td align="right">{{printf "%.2f" .R2}}</td><td align="right">{{printf "%.2f" .TT}}</td>{{end}}<td>{{.BirthYear}}</td><td>{{printf "%.2f" .USSAPoints}}</td></td><td>{{.DnfReason}}</td></tr>
   {{end}}
 </table>

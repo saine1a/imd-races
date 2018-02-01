@@ -18,6 +18,7 @@ type Result struct {
 	Points      int
 	RaceType    string
 	BirthYear   string
+	USSAPoints  float64
 }
 
 func TotalTime(result *Result) float64 {

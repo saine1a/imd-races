@@ -181,6 +181,7 @@ func GetUSSAResults(definition RaceDefinition) RaceResult {
 			modifiedResult.R1 = convTime(result.R1)
 			modifiedResult.R2 = convTime(result.R2)
 			modifiedResult.RaceType = raceResult.RaceType
+			modifiedResult.USSAPoints = result.USSAResult
 			raceResult.Results = append(raceResult.Results, &modifiedResult)
 		}
 	}
