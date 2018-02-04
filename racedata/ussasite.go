@@ -209,6 +209,13 @@ func calcAge(year int64) string {
 }
 
 func convTime(raceTime string) float64 {
+
+	// Special case for wierd bug with USSA site
+
+	if strings.HasPrefix(raceTime,"00:60.") {
+		raceTime = strings.Replace(raceTime,"00:60.","01:00.",1)
+	}
+
 	theTime, err :=
 		time.Parse("04:05.00", raceTime)
 

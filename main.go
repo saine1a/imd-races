@@ -14,7 +14,9 @@ var ageGroup = "U14"
 var races = []racedata.RaceDefinition{
 	{RaceId: "U0637", Qualifier: true, TimingSite: racedata.USSA}, 
 	{RaceId: "U0638", Qualifier: true, TimingSite: racedata.USSA}, 
-	{RaceId: "U0634", Qualifier: true, TimingSite: racedata.USSA}}
+	{RaceId: "U0634", Qualifier: true, TimingSite: racedata.USSA},
+	{RaceId: "U0051", Qualifier: true, TimingSite: racedata.USSA},
+	{RaceId: "U0053", Qualifier: true, TimingSite: racedata.USSA}}
 
 /* REBEKAH
 
