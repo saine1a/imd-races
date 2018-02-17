@@ -1,7 +1,9 @@
 package racedata
 
-import "sort"
-
+import (
+	"imd-races/racelisting"
+	"sort"
+)
 type Result struct {
 	Bib         string
 	Athlete     string
@@ -31,22 +33,9 @@ func TotalTime(result *Result) float64 {
 
 type ResultArray []*Result
 
-type RaceSiteType int32
-
-const (
-	USSA       RaceSiteType = 0
-	LIVETIMING RaceSiteType = 1
-)
-
-type RaceDefinition struct {
-	RaceId     string
-	Qualifier  bool
-	TimingSite RaceSiteType
-}
-
 type RaceResult struct {
 	RaceName   string
-	Definition RaceDefinition
+	Definition racelisting.RaceDefinition
 	RaceType   string
 	RaceDate   string
 	Results    ResultArray

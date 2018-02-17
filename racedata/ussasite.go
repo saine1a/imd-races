@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"imd-races/racelisting"
 )
 
 var OurDateFormat = time.RFC3339 // "2006-1-2 15:4:5"
@@ -41,7 +42,7 @@ type USSAResult struct {
 	USSAResult  float64
 }
 
-func GetUSSAResults(definition RaceDefinition) RaceResult {
+func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 
 	raceResult := RaceResult{}
 

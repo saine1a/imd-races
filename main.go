@@ -5,38 +5,19 @@ import (
 	"imd-races/analysis"
 	"imd-races/racedata"
 	"net/http"
+	"imd-races/racelisting"
 )
-
-var focusAthlete = "Brain, Jonathan"
-var ageGroup = "U14"
-
-//var races = []racedata.RaceDefinition{{RaceId: "178531", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "178336", Qualifier: true, TimingSite: racedata.LIVETIMING}, {RaceId: "178251", Qualifier: true, TimingSite: racedata.LIVETIMING}}
-var races = []racedata.RaceDefinition{
-	{RaceId: "U0637", Qualifier: true, TimingSite: racedata.USSA}, 
-	{RaceId: "U0638", Qualifier: true, TimingSite: racedata.USSA}, 
-	{RaceId: "U0634", Qualifier: true, TimingSite: racedata.USSA},
-	{RaceId: "U0051", Qualifier: true, TimingSite: racedata.USSA},
-	{RaceId: "U0053", Qualifier: true, TimingSite: racedata.USSA}}
-
-/* REBEKAH
 
 var focusAthlete = "Brain, Rebekah"
 
 var ageGroup = "U16"
 
-var races = []racedata.RaceDefinition{
-	{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA},
-	{RaceId: "U0175", Qualifier: true, TimingSite: racedata.USSA},
-	{RaceId: "U0167", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0165", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0171", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0169", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0643", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0645", Qualifier: false, TimingSite: racedata.USSA},
-	{RaceId: "U0647", Qualifier: false, TimingSite: racedata.USSA},
-}*/
+/*
 
-//var races = []racedata.RaceDefinition{{RaceId: "U0173", Qualifier: true, TimingSite: racedata.USSA}}
+var focusAthlete = "Brain, Jonathan"
+var ageGroup = "U14"
+
+*/
 
 var raceResults []racedata.RaceResult
 
@@ -46,11 +27,11 @@ func initRaces() {
 
 	raceResults = make([]racedata.RaceResult, 0, 20)
 
-	for _, race := range races {
+	for _, race := range racelisting.Races {
 		switch race.TimingSite {
-		case racedata.LIVETIMING:
+		case racelisting.LIVETIMING:
 			raceResults = append(raceResults, racedata.GetLiveTimingResults(race))
-		case racedata.USSA:
+		case racelisting.USSA:
 			raceResults = append(raceResults, racedata.GetUSSAResults(race))
 		}
 

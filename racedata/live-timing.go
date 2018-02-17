@@ -10,9 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+	"imd-races/racelisting"
 )
 
-func GetLiveTimingResults(definition RaceDefinition) RaceResult {
+func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
 
 	raceResult := RaceResult{}
 
