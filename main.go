@@ -2,10 +2,10 @@ package main
 
 import (
 	"html/template"
-	"imd-races/analysis"
-	"imd-races/racedata"
+	"github.com/saine1a/imd-races/analysis"
+	"github.com/saine1a/imd-races/racedata"
 	"net/http"
-	"imd-races/racelisting"
+	"github.com/saine1a/imd-races/racelisting"
 )
 
 var focusAthlete = "Brain, Rebekah"

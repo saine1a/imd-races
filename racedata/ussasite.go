@@ -3,7 +3,7 @@ package racedata
 import (
 	"encoding/csv"
 	"fmt"
-	"imd-races/csvmapper"
+	"github.com/saine1a/imd-races/csvmapper"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"imd-races/racelisting"
+	"github.com/saine1a/imd-races/racelisting"
 )
 
 var OurDateFormat = time.RFC3339 // "2006-1-2 15:4:5"

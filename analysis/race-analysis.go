@@ -2,7 +2,7 @@ package analysis
 
 import (
 	"fmt"
-	"imd-races/racedata"
+	"github.com/saine1a/imd-races/racedata"
 	"sort"
 )
 

@@ -1,7 +1,7 @@
 package racedata
 
 import (
-	"imd-races/racelisting"
+	"github.com/saine1a/imd-races/racelisting"
 	"sort"
 )
 type Result struct {

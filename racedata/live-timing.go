@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-	"imd-races/racelisting"
+	"github.com/saine1a/imd-races/racelisting"
 )
 
 func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
