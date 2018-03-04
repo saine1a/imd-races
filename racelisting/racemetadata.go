@@ -13,16 +13,21 @@ type RaceDefinition struct {
 	TimingSite RaceSiteType
 }
 
-/*
 //var races = []RaceDefinition{{RaceId: "178531", Qualifier: true, TimingSite: LIVETIMING}, {RaceId: "178336", Qualifier: true, TimingSite: LIVETIMING}, {RaceId: "178251", Qualifier: true, TimingSite: LIVETIMING}}
 var Races = []RaceDefinition{
 	{RaceId: "U0637", Qualifier: true, TimingSite: USSA}, 
 	{RaceId: "U0638", Qualifier: true, TimingSite: USSA}, 
+	{RaceId: "186606", Qualifier: true, TimingSite: LIVETIMING},
 	{RaceId: "U0634", Qualifier: true, TimingSite: USSA},
 	{RaceId: "U0051", Qualifier: true, TimingSite: USSA},
-	{RaceId: "U0053", Qualifier: true, TimingSite: USSA}}
-*/
+	{RaceId: "U0053", Qualifier: true, TimingSite: USSA},
+	{RaceId: "U0055", Qualifier: true, TimingSite: USSA},
+	{RaceId: "U0182", Qualifier: true, TimingSite: USSA},
+	{RaceId: "U0180", Qualifier: true, TimingSite: USSA},
+}
 
+
+/*
 var Races = []RaceDefinition{
 	{RaceId: "U0173", Qualifier: true, TimingSite: USSA},
 	{RaceId: "U0175", Qualifier: true, TimingSite: USSA},
@@ -33,3 +38,4 @@ var Races = []RaceDefinition{
 	{RaceId: "U0004", Qualifier: true, TimingSite: USSA},
 	{RaceId: "U0006", Qualifier: true, TimingSite: USSA},
 	{RaceId: "U0008", Qualifier: true, TimingSite: USSA}}
+*/

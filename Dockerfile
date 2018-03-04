@@ -1,9 +1,9 @@
-FROM golang:1.8.3 as builder
-WORKDIR /go/src/github.com/saine1a/imd-races
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o imd-races .
+FROM golang:1.7
 
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=builder /go/src/github.com/saine1a/imd-races/imd-races .
-CMD ["./imd-races"]
+RUN go get github.com/saine1a/imd-races
+
+RUN go install github.com/saine1a/imd-races
+
+ENTRYPOINT /go/bin/imd-races
+
+EXPOSE 8080

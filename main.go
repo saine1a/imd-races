@@ -8,16 +8,15 @@ import (
 	"github.com/saine1a/imd-races/racelisting"
 )
 
+/*
 var focusAthlete = "Brain, Rebekah"
 
 var ageGroup = "U16"
-
-/*
+*/
 
 var focusAthlete = "Brain, Jonathan"
 var ageGroup = "U14"
 
-*/
 
 var raceResults []racedata.RaceResult
 
