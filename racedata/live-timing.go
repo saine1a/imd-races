@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
 	"github.com/saine1a/imd-races/racelisting"
 )
 
@@ -31,6 +32,8 @@ func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
 	query.Set("m", "1")
 	query.Set("u", "0")
 	url.RawQuery = query.Encode()
+
+	fmt.Printf("Getting URL %s\n", url.String())
 
 	resp, err := client.Get(url.String())
 

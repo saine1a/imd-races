@@ -3,7 +3,6 @@ package racedata
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/saine1a/imd-races/csvmapper"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/saine1a/imd-races/csvmapper"
 	"github.com/saine1a/imd-races/racelisting"
 )
 
@@ -62,6 +63,8 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 
 	query.Set("csv", "0")
 	url.RawQuery = query.Encode()
+
+	fmt.Printf("Getting URL %s\n", url.String())
 
 	resp, err := client.Get(url.String())
 
@@ -167,7 +170,7 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 			modifiedResult := Result{}
 
 			modifiedResult.Age = calcAge(result.BirthYear)
-			modifiedResult.BirthYear = fmt.Sprintf("%d",result.BirthYear)
+			modifiedResult.BirthYear = fmt.Sprintf("%d", result.BirthYear)
 			modifiedResult.Athlete = result.Athlete
 			modifiedResult.Ussa = result.AthleteID
 			modifiedResult.Bib = "-"
@@ -213,8 +216,8 @@ func convTime(raceTime string) float64 {
 
 	// Special case for wierd bug with USSA site
 
-	if strings.HasPrefix(raceTime,"00:60.") {
-		raceTime = strings.Replace(raceTime,"00:60.","01:00.",1)
+	if strings.HasPrefix(raceTime, "00:60.") {
+		raceTime = strings.Replace(raceTime, "00:60.", "01:00.", 1)
 	}
 
 	theTime, err :=
