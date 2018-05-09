@@ -52,7 +52,7 @@ func handleAthleteImpl() *HomePage {
 	return &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete}
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
+func handleGoHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
 
 	t.Execute(w, handleAthleteImpl())
@@ -140,13 +140,7 @@ func handleAthleteHtml(w http.ResponseWriter, r *http.Request) {
 
 func handleAthletesREST(w http.ResponseWriter, r *http.Request) {
 
-	// Handle athlete rest request
-
-	params := mux.Vars(r)
-
-	athleteName := params["name"]
-
-	json.NewEncoder(w).Encode(handleIndividualAthleteImpl(athleteName))
+	json.NewEncoder(w).Encode(handleAthleteImpl())
 
 }
 
@@ -191,12 +185,16 @@ func main() {
 
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 
-	// HTML routes
+	// HTML routes for Elm code
 
-	router.HandleFunc("/", handleHome)
-	router.HandleFunc("/athletePage", handleAthleteHtml)
-	router.HandleFunc("/racePage", handleRaceHtml)
-	router.HandleFunc("/racesPage", handleRaceListHtml)
+	router.Handle("/", http.FileServer(http.Dir("./Web")))
+
+	// HTML routes for Go templates
+
+	router.HandleFunc("/go", handleGoHome)
+	router.HandleFunc("/go/athletePage", handleAthleteHtml)
+	router.HandleFunc("/go/racePage", handleRaceHtml)
+	router.HandleFunc("/go/racesPage", handleRaceListHtml)
 
 	// REST API routes
 
