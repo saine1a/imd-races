@@ -8913,35 +8913,6 @@ var _user$project$Main$athleteToTableRow = function (athlete) {
 			}
 		});
 };
-var _user$project$Main$decodeContent = A2(
-	_elm_lang$core$Json_Decode$at,
-	{
-		ctor: '::',
-		_0: 'AthleteName',
-		_1: {ctor: '[]'}
-	},
-	_elm_lang$core$Json_Decode$string);
-var _user$project$Main$getAthletes = A2(_elm_lang$http$Http$get, _user$project$Main$api, _user$project$Main$decodeContent);
-var _user$project$Main$Model = function (a) {
-	return {athleteName: a};
-};
-var _user$project$Main$Athlete = F2(
-	function (a, b) {
-		return {name: a, $class: b};
-	});
-var _user$project$Main$names = {
-	ctor: '::',
-	_0: A2(_user$project$Main$Athlete, 'Rebekah', 'U16'),
-	_1: {
-		ctor: '::',
-		_0: A2(_user$project$Main$Athlete, 'Caroline', 'U16'),
-		_1: {
-			ctor: '::',
-			_0: A2(_user$project$Main$Athlete, 'Abi', 'U16'),
-			_1: {ctor: '[]'}
-		}
-	}
-};
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$table,
@@ -8985,10 +8956,26 @@ var _user$project$Main$view = function (model) {
 				},
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$core$List$map, _user$project$Main$athleteToTableRow, _user$project$Main$names),
+					_0: A2(_elm_lang$core$List$map, _user$project$Main$athleteToTableRow, model.athletes),
 					_1: {ctor: '[]'}
 				}
 			}));
+};
+var _user$project$Main$decodeContent = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'AthleteName',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _user$project$Main$getAthletes = A2(_elm_lang$http$Http$get, _user$project$Main$api, _user$project$Main$decodeContent);
+var _user$project$Main$Athlete = F2(
+	function (a, b) {
+		return {name: a, $class: b};
+	});
+var _user$project$Main$Model = function (a) {
+	return {athletes: a};
 };
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
 var _user$project$Main$GetAthletes = {ctor: 'GetAthletes'};
@@ -9014,15 +9001,19 @@ var _user$project$Main$update = F2(
 					var _p3 = A2(_elm_lang$core$Debug$log, 'getAthletes error ', _p2._0);
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var _p5 = _p2._0;
-					var _p4 = A2(_elm_lang$core$Debug$log, 'got name ', _p5);
+					var newAthleteList = A2(
+						_elm_lang$core$Basics_ops['++'],
+						model.athletes,
+						{
+							ctor: '::',
+							_0: A2(_user$project$Main$Athlete, _p2._0, 'U14'),
+							_1: {ctor: '[]'}
+						});
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{
-								athleteName: _elm_lang$core$Maybe$Just(_p5)
-							}),
+							{athletes: newAthleteList}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -9031,7 +9022,9 @@ var _user$project$Main$update = F2(
 var _user$project$Main$initialization = A2(
 	_user$project$Main$update,
 	_user$project$Main$GetAthletes,
-	{athleteName: _elm_lang$core$Maybe$Nothing});
+	{
+		athletes: {ctor: '[]'}
+	});
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{
 		init: _user$project$Main$initialization,

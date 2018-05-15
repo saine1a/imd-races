@@ -9,18 +9,16 @@ import Http exposing (..)
 
 import Array
 
+type alias Athlete = { name : String, class : String }
+
 type alias Model =
-    { athleteName : Maybe String
+    { athletes : List Athlete
     }
     
 type Msg
     = GotAthletes (Result Http.Error String)
     | GetAthletes
     | NoOp
-
-type alias Athlete = { name : String, class : String }
-
-names = [ Athlete "Rebekah" "U16",Athlete "Caroline" "U16",Athlete "Abi" "U16" ]
 
 
 decodeContent : Decoder String
@@ -29,13 +27,13 @@ decodeContent =
 
 
 athleteToTableRow: Athlete -> Html msg
-
 athleteToTableRow athlete = 
     tr []
     [
         td[][text athlete.name],
         td[][text athlete.class]
     ]
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -58,11 +56,12 @@ update msg model =
                     in
                         ( model, Cmd.none )
 
-                Ok name ->
-                    let 
-                        _ = Debug.log "got name " name
+                Ok theName ->
+                    let
+                        newAthleteList = model.athletes ++ [ Athlete theName "U14" ]
                     in
-                        ( { model | athleteName = Just name }, Cmd.none )
+                        
+                        ( { model | athletes = newAthleteList }, Cmd.none )
 
 
 api : String
@@ -75,6 +74,7 @@ getAthletes =
     Http.get api decodeContent
 
 view : Model -> Html msg
+
 view model =
     table[class "table table-striped"] (
             List.concat[
@@ -84,12 +84,12 @@ view model =
                     , th [][text "Class"]
                     ]
             ]
-            , List.map athleteToTableRow names
+            , List.map athleteToTableRow model.athletes
          ]
     )
 
 initialization : ( Model, Cmd Msg )
-initialization = update GetAthletes { athleteName = Nothing }
+initialization = update GetAthletes { athletes = [] }
 
 main =
     Html.program
