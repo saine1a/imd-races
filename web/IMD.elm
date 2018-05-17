@@ -5,10 +5,14 @@ import Html.Attributes exposing (..)
 
 import Json.Decode exposing (..)
 import Http exposing (..)
+import Bootstrap.CDN exposing (..)
+import Bootstrap.Table exposing (..)
+import Bootstrap.Grid exposing (..)
+
 
 import Array
 
-type alias Athlete = { name : String, birthYear : String }
+type alias Athlete = { name : String, birthYear : String, overallRank : Int, overallPoints : Int, slPoints : Int, gsPoints : Int, sgPoints : Int}
 
 type alias Model =
     { athletes : List Athlete
@@ -22,17 +26,27 @@ type Msg
 athleteDecoder:  Decoder (List Athlete)
 athleteDecoder =  
     Json.Decode.list (
-        map2 Athlete 
+        map7 Athlete 
             (field "Athlete" string)
             (field "BirthYear" string)
+            (field "OverallRank" int)
+            (field "OverallPoints" int)
+            (field "SLPointTotal" int)
+            (field "GSPointTotal" int)
+            (field "SGPointTotal" int)
     )
 
-athleteToTableRow: Athlete -> Html msg
+athleteToTableRow: Athlete -> Bootstrap.Table.Row msg
 athleteToTableRow athlete = 
-    tr []
+    Bootstrap.Table.tr []
     [
-        td[][text athlete.name],
-        td[][text athlete.birthYear]
+        Bootstrap.Table.td[][text (toString athlete.overallRank)],
+        Bootstrap.Table.td[][text athlete.name],
+        Bootstrap.Table.td[][text athlete.birthYear],
+        Bootstrap.Table.td[][text (toString athlete.overallPoints)],
+        Bootstrap.Table.td[][text (toString athlete.slPoints)],
+        Bootstrap.Table.td[][text (toString athlete.gsPoints)],
+        Bootstrap.Table.td[][text (toString athlete.sgPoints)]
     ]
 
 
@@ -73,17 +87,24 @@ getAthletes =
 view : Model -> Html msg
 
 view model =
-    table[class "table table-striped"] (
-            List.concat[
-            [
-                thead[]
-                    [ th [][text "Name"]
-                    , th [][text "Birth Year"]
+    Bootstrap.Grid.container[]
+        [ 
+            Bootstrap.CDN.stylesheet,
+                Bootstrap.Table.table
+                { options = [ Bootstrap.Table.striped, Bootstrap.Table.hover ],
+                thead = Bootstrap.Table.simpleThead
+                    [
+                        Bootstrap.Table.th [][text "Rank"],
+                        Bootstrap.Table.th [][text "Name"],
+                        Bootstrap.Table.th [][text "Birth Year"],
+                        Bootstrap.Table.th [][text "Overall Points"],
+                        Bootstrap.Table.th [][text "SL"],
+                        Bootstrap.Table.th [][text "GS"],
+                        Bootstrap.Table.th [][text "SG"]
                     ]
-            ]
-            , List.map athleteToTableRow model.athletes
+                    , tbody = Bootstrap.Table.tbody [] (List.map athleteToTableRow model.athletes)
+                }
          ]
-    )
 
 initialization : ( Model, Cmd Msg )
 initialization = update GetAthletes { athletes = [] }
