@@ -21,10 +21,11 @@ type Msg
 
 athleteDecoder:  Decoder (List Athlete)
 athleteDecoder =  
-    map2 Athlete 
-    (field "Athlete" string)
-    (field "BirthYear" string)
-    |> Json.Decode.list
+    Json.Decode.list (
+        map2 Athlete 
+            (field "Athlete" string)
+            (field "BirthYear" string)
+    )
 
 athleteToTableRow: Athlete -> Html msg
 athleteToTableRow athlete = 
@@ -67,7 +68,7 @@ api =
 
 getAthletes : Http.Request (List Athlete)
 getAthletes =
-    Http.get api athleteDecoder 
+    Http.get api ( at ["AllPoints"] athleteDecoder ) 
 
 view : Model -> Html msg
 

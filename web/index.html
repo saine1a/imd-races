@@ -8971,7 +8971,17 @@ var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
 		_user$project$Main$Athlete,
 		A2(_elm_lang$core$Json_Decode$field, 'Athlete', _elm_lang$core$Json_Decode$string),
 		A2(_elm_lang$core$Json_Decode$field, 'BirthYear', _elm_lang$core$Json_Decode$string)));
-var _user$project$Main$getAthletes = A2(_elm_lang$http$Http$get, _user$project$Main$api, _user$project$Main$athleteDecoder);
+var _user$project$Main$getAthletes = A2(
+	_elm_lang$http$Http$get,
+	_user$project$Main$api,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'AllPoints',
+			_1: {ctor: '[]'}
+		},
+		_user$project$Main$athleteDecoder));
 var _user$project$Main$Model = function (a) {
 	return {athletes: a};
 };
