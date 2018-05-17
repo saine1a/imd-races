@@ -8884,7 +8884,7 @@ var _elm_lang$http$Http$StringPart = F2(
 		return {ctor: 'StringPart', _0: a, _1: b};
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
-var _user$project$Main$api = 'http://localhost:8080/athlete/Jonathan%20Brain';
+var _user$project$Main$api = 'http://localhost:8080/athlete';
 var _user$project$Main$athleteToTableRow = function (athlete) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8906,7 +8906,7 @@ var _user$project$Main$athleteToTableRow = function (athlete) {
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(athlete.$class),
+						_0: _elm_lang$html$Html$text(athlete.birthYear),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
@@ -8946,7 +8946,7 @@ var _user$project$Main$view = function (model) {
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Class'),
+										_0: _elm_lang$html$Html$text('Birth Year'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {ctor: '[]'}
@@ -8961,19 +8961,17 @@ var _user$project$Main$view = function (model) {
 				}
 			}));
 };
-var _user$project$Main$decodeContent = A2(
-	_elm_lang$core$Json_Decode$at,
-	{
-		ctor: '::',
-		_0: 'AthleteName',
-		_1: {ctor: '[]'}
-	},
-	_elm_lang$core$Json_Decode$string);
-var _user$project$Main$getAthletes = A2(_elm_lang$http$Http$get, _user$project$Main$api, _user$project$Main$decodeContent);
 var _user$project$Main$Athlete = F2(
 	function (a, b) {
-		return {name: a, $class: b};
+		return {name: a, birthYear: b};
 	});
+var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
+	A3(
+		_elm_lang$core$Json_Decode$map2,
+		_user$project$Main$Athlete,
+		A2(_elm_lang$core$Json_Decode$field, 'Athlete', _elm_lang$core$Json_Decode$string),
+		A2(_elm_lang$core$Json_Decode$field, 'BirthYear', _elm_lang$core$Json_Decode$string)));
+var _user$project$Main$getAthletes = A2(_elm_lang$http$Http$get, _user$project$Main$api, _user$project$Main$athleteDecoder);
 var _user$project$Main$Model = function (a) {
 	return {athletes: a};
 };
@@ -9001,19 +8999,11 @@ var _user$project$Main$update = F2(
 					var _p3 = A2(_elm_lang$core$Debug$log, 'getAthletes error ', _p2._0);
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var newAthleteList = A2(
-						_elm_lang$core$Basics_ops['++'],
-						model.athletes,
-						{
-							ctor: '::',
-							_0: A2(_user$project$Main$Athlete, _p2._0, 'U14'),
-							_1: {ctor: '[]'}
-						});
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{athletes: newAthleteList}),
+							{athletes: _p2._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}

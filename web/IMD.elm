@@ -4,34 +4,34 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 
 import Json.Decode exposing (..)
-
 import Http exposing (..)
 
 import Array
 
-type alias Athlete = { name : String, class : String }
+type alias Athlete = { name : String, birthYear : String }
 
 type alias Model =
     { athletes : List Athlete
     }
     
 type Msg
-    = GotAthletes (Result Http.Error String)
+    = GotAthletes (Result Http.Error (List Athlete))
     | GetAthletes
     | NoOp
 
-
-decodeContent : Decoder String
-decodeContent =
-    at [ "AthleteName"] string
-
+athleteDecoder:  Decoder (List Athlete)
+athleteDecoder =  
+    map2 Athlete 
+    (field "Athlete" string)
+    (field "BirthYear" string)
+    |> Json.Decode.list
 
 athleteToTableRow: Athlete -> Html msg
 athleteToTableRow athlete = 
     tr []
     [
         td[][text athlete.name],
-        td[][text athlete.class]
+        td[][text athlete.birthYear]
     ]
 
 
@@ -56,22 +56,18 @@ update msg model =
                     in
                         ( model, Cmd.none )
 
-                Ok theName ->
-                    let
-                        newAthleteList = model.athletes ++ [ Athlete theName "U14" ]
-                    in
-                        
-                        ( { model | athletes = newAthleteList }, Cmd.none )
+                Ok athleteList ->
+                    ( { model | athletes = athleteList }, Cmd.none )
 
 
 api : String
 api =
-    "http://localhost:8080/athlete/Jonathan%20Brain"
+    "http://localhost:8080/athlete"
 
 
-getAthletes : Http.Request String
+getAthletes : Http.Request (List Athlete)
 getAthletes =
-    Http.get api decodeContent
+    Http.get api athleteDecoder 
 
 view : Model -> Html msg
 
@@ -81,7 +77,7 @@ view model =
             [
                 thead[]
                     [ th [][text "Name"]
-                    , th [][text "Class"]
+                    , th [][text "Birth Year"]
                     ]
             ]
             , List.map athleteToTableRow model.athletes
