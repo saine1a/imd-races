@@ -8,6 +8,7 @@ import Http exposing (..)
 import Bootstrap.CDN exposing (..)
 import Bootstrap.Table exposing (..)
 import Bootstrap.Grid exposing (..)
+import Html.Events exposing (..)
 
 
 import Array
@@ -91,7 +92,7 @@ view model =
         [ 
             Bootstrap.CDN.stylesheet,
                 Bootstrap.Table.table
-                { options = [ Bootstrap.Table.striped, Bootstrap.Table.hover ],
+                { options = [ Bootstrap.Table.striped, Bootstrap.Table.hover, Bootstrap.Table.responsive ],
                 thead = Bootstrap.Table.simpleThead
                     [
                         Bootstrap.Table.th [][text "Rank"],
