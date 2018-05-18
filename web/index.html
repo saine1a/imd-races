@@ -11507,15 +11507,26 @@ var _rundis$elm_bootstrap$Bootstrap_Table$tbody = F2(
 		return _rundis$elm_bootstrap$Bootstrap_Table$TBody(
 			{attributes: attributes, rows: rows});
 	});
-var _user$project$Main$api = 'http://localhost:8080/athlete';
-var _user$project$Main$Athlete = F7(
+var _user$project$Model_IMDModel$Athlete = F7(
 	function (a, b, c, d, e, f, g) {
 		return {name: a, birthYear: b, overallRank: c, overallPoints: d, slPoints: e, gsPoints: f, sgPoints: g};
 	});
-var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
+var _user$project$Model_IMDModel$Model = function (a) {
+	return {athletes: a};
+};
+var _user$project$Model_IMDModel$AthleteClicked = function (a) {
+	return {ctor: 'AthleteClicked', _0: a};
+};
+var _user$project$Model_IMDModel$NoOp = {ctor: 'NoOp'};
+var _user$project$Model_IMDModel$GetAthletes = {ctor: 'GetAthletes'};
+var _user$project$Model_IMDModel$GotAthletes = function (a) {
+	return {ctor: 'GotAthletes', _0: a};
+};
+var _user$project$Commands$api = 'http://localhost:8080/athlete';
+var _user$project$Commands$athleteDecoder = _elm_lang$core$Json_Decode$list(
 	A8(
 		_elm_lang$core$Json_Decode$map7,
-		_user$project$Main$Athlete,
+		_user$project$Model_IMDModel$Athlete,
 		A2(_elm_lang$core$Json_Decode$field, 'Athlete', _elm_lang$core$Json_Decode$string),
 		A2(_elm_lang$core$Json_Decode$field, 'BirthYear', _elm_lang$core$Json_Decode$string),
 		A2(_elm_lang$core$Json_Decode$field, 'OverallRank', _elm_lang$core$Json_Decode$int),
@@ -11523,9 +11534,9 @@ var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
 		A2(_elm_lang$core$Json_Decode$field, 'SLPointTotal', _elm_lang$core$Json_Decode$int),
 		A2(_elm_lang$core$Json_Decode$field, 'GSPointTotal', _elm_lang$core$Json_Decode$int),
 		A2(_elm_lang$core$Json_Decode$field, 'SGPointTotal', _elm_lang$core$Json_Decode$int)));
-var _user$project$Main$getAthletes = A2(
+var _user$project$Commands$getAthletes = A2(
 	_elm_lang$http$Http$get,
-	_user$project$Main$api,
+	_user$project$Commands$api,
 	A2(
 		_elm_lang$core$Json_Decode$at,
 		{
@@ -11533,14 +11544,8 @@ var _user$project$Main$getAthletes = A2(
 			_0: 'AllPoints',
 			_1: {ctor: '[]'}
 		},
-		_user$project$Main$athleteDecoder));
-var _user$project$Main$Model = function (a) {
-	return {athletes: a};
-};
-var _user$project$Main$AthleteClicked = function (a) {
-	return {ctor: 'AthleteClicked', _0: a};
-};
-var _user$project$Main$athleteToTableRow = function (athlete) {
+		_user$project$Commands$athleteDecoder));
+var _user$project$Views_AllAthletes$athleteToTableRow = function (athlete) {
 	return A2(
 		_rundis$elm_bootstrap$Bootstrap_Table$tr,
 		{ctor: '[]'},
@@ -11570,7 +11575,7 @@ var _user$project$Main$athleteToTableRow = function (athlete) {
 								_1: {
 									ctor: '::',
 									_0: _rundis$elm_bootstrap$Bootstrap_Button$onClick(
-										_user$project$Main$AthleteClicked(athlete.name)),
+										_user$project$Model_IMDModel$AthleteClicked(athlete.name)),
 									_1: {ctor: '[]'}
 								}
 							},
@@ -11644,7 +11649,7 @@ var _user$project$Main$athleteToTableRow = function (athlete) {
 			}
 		});
 };
-var _user$project$Main$view = function (model) {
+var _user$project$Views_AllAthletes$view = function (model) {
 	return A2(
 		_rundis$elm_bootstrap$Bootstrap_Grid$container,
 		{ctor: '[]'},
@@ -11750,16 +11755,11 @@ var _user$project$Main$view = function (model) {
 						tbody: A2(
 							_rundis$elm_bootstrap$Bootstrap_Table$tbody,
 							{ctor: '[]'},
-							A2(_elm_lang$core$List$map, _user$project$Main$athleteToTableRow, model.athletes))
+							A2(_elm_lang$core$List$map, _user$project$Views_AllAthletes$athleteToTableRow, model.athletes))
 					}),
 				_1: {ctor: '[]'}
 			}
 		});
-};
-var _user$project$Main$NoOp = {ctor: 'NoOp'};
-var _user$project$Main$GetAthletes = {ctor: 'GetAthletes'};
-var _user$project$Main$GotAthletes = function (a) {
-	return {ctor: 'GotAthletes', _0: a};
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
@@ -11772,7 +11772,7 @@ var _user$project$Main$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: A2(_elm_lang$http$Http$send, _user$project$Main$GotAthletes, _user$project$Main$getAthletes)
+					_1: A2(_elm_lang$http$Http$send, _user$project$Model_IMDModel$GotAthletes, _user$project$Commands$getAthletes)
 				};
 			case 'GotAthletes':
 				var _p2 = _p0._0;
@@ -11795,7 +11795,7 @@ var _user$project$Main$update = F2(
 	});
 var _user$project$Main$initialization = A2(
 	_user$project$Main$update,
-	_user$project$Main$GetAthletes,
+	_user$project$Model_IMDModel$GetAthletes,
 	{
 		athletes: {ctor: '[]'}
 	});
@@ -11803,7 +11803,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 	{
 		init: _user$project$Main$initialization,
 		update: _user$project$Main$update,
-		view: _user$project$Main$view,
+		view: _user$project$Views_AllAthletes$view,
 		subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none)
 	})();
 var Elm = {};
