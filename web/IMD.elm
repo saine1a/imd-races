@@ -8,6 +8,7 @@ import Http exposing (..)
 import Bootstrap.CDN exposing (..)
 import Bootstrap.Table exposing (..)
 import Bootstrap.Grid exposing (..)
+import Bootstrap.Button exposing (..)
 import Html.Events exposing (..)
 
 
@@ -23,6 +24,7 @@ type Msg
     = GotAthletes (Result Http.Error (List Athlete))
     | GetAthletes
     | NoOp
+    | AthleteClicked 
 
 athleteDecoder:  Decoder (List Athlete)
 athleteDecoder =  
@@ -39,10 +41,9 @@ athleteDecoder =
 
 athleteToTableRow: Athlete -> Bootstrap.Table.Row msg
 athleteToTableRow athlete = 
-    Bootstrap.Table.tr []
+    Bootstrap.Table.tr [Bootstrap.Button.onClick {operator=AthleteClicked,data=athlete.name}]
     [
         Bootstrap.Table.td[][text (toString athlete.overallRank)],
-        Bootstrap.Table.td[][text athlete.name],
         Bootstrap.Table.td[][text athlete.birthYear],
         Bootstrap.Table.td[][text (toString athlete.overallPoints)],
         Bootstrap.Table.td[][text (toString athlete.slPoints)],
