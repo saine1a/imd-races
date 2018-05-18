@@ -24,7 +24,7 @@ type Msg
     = GotAthletes (Result Http.Error (List Athlete))
     | GetAthletes
     | NoOp
-    | AthleteClicked 
+    | AthleteClicked String
 
 athleteDecoder:  Decoder (List Athlete)
 athleteDecoder =  
@@ -39,11 +39,12 @@ athleteDecoder =
             (field "SGPointTotal" int)
     )
 
-athleteToTableRow: Athlete -> Bootstrap.Table.Row msg
+athleteToTableRow: Athlete -> Bootstrap.Table.Row Msg
 athleteToTableRow athlete = 
-    Bootstrap.Table.tr [Bootstrap.Button.onClick {operator=AthleteClicked,data=athlete.name}]
+    Bootstrap.Table.tr []
     [
         Bootstrap.Table.td[][text (toString athlete.overallRank)],
+        Bootstrap.Table.td[][Bootstrap.Button.button [Bootstrap.Button.primary,Bootstrap.Button.onClick (AthleteClicked athlete.name)][text athlete.name]],
         Bootstrap.Table.td[][text athlete.birthYear],
         Bootstrap.Table.td[][text (toString athlete.overallPoints)],
         Bootstrap.Table.td[][text (toString athlete.slPoints)],
@@ -75,6 +76,12 @@ update msg model =
 
                 Ok athleteList ->
                     ( { model | athletes = athleteList }, Cmd.none )
+        AthleteClicked name ->
+            let
+                _=
+                    Debug.log "Click on " name
+            in
+                ( model, Cmd.none )
 
 
 api : String
@@ -86,7 +93,7 @@ getAthletes : Http.Request (List Athlete)
 getAthletes =
     Http.get api ( at ["AllPoints"] athleteDecoder ) 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 
 view model =
     Bootstrap.Grid.container[]

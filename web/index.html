@@ -11508,6 +11508,38 @@ var _rundis$elm_bootstrap$Bootstrap_Table$tbody = F2(
 			{attributes: attributes, rows: rows});
 	});
 var _user$project$Main$api = 'http://localhost:8080/athlete';
+var _user$project$Main$Athlete = F7(
+	function (a, b, c, d, e, f, g) {
+		return {name: a, birthYear: b, overallRank: c, overallPoints: d, slPoints: e, gsPoints: f, sgPoints: g};
+	});
+var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
+	A8(
+		_elm_lang$core$Json_Decode$map7,
+		_user$project$Main$Athlete,
+		A2(_elm_lang$core$Json_Decode$field, 'Athlete', _elm_lang$core$Json_Decode$string),
+		A2(_elm_lang$core$Json_Decode$field, 'BirthYear', _elm_lang$core$Json_Decode$string),
+		A2(_elm_lang$core$Json_Decode$field, 'OverallRank', _elm_lang$core$Json_Decode$int),
+		A2(_elm_lang$core$Json_Decode$field, 'OverallPoints', _elm_lang$core$Json_Decode$int),
+		A2(_elm_lang$core$Json_Decode$field, 'SLPointTotal', _elm_lang$core$Json_Decode$int),
+		A2(_elm_lang$core$Json_Decode$field, 'GSPointTotal', _elm_lang$core$Json_Decode$int),
+		A2(_elm_lang$core$Json_Decode$field, 'SGPointTotal', _elm_lang$core$Json_Decode$int)));
+var _user$project$Main$getAthletes = A2(
+	_elm_lang$http$Http$get,
+	_user$project$Main$api,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'AllPoints',
+			_1: {ctor: '[]'}
+		},
+		_user$project$Main$athleteDecoder));
+var _user$project$Main$Model = function (a) {
+	return {athletes: a};
+};
+var _user$project$Main$AthleteClicked = function (a) {
+	return {ctor: 'AthleteClicked', _0: a};
+};
 var _user$project$Main$athleteToTableRow = function (athlete) {
 	return A2(
 		_rundis$elm_bootstrap$Bootstrap_Table$tr,
@@ -11535,7 +11567,12 @@ var _user$project$Main$athleteToTableRow = function (athlete) {
 							{
 								ctor: '::',
 								_0: _rundis$elm_bootstrap$Bootstrap_Button$primary,
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _rundis$elm_bootstrap$Bootstrap_Button$onClick(
+										_user$project$Main$AthleteClicked(athlete.name)),
+									_1: {ctor: '[]'}
+								}
 							},
 							{
 								ctor: '::',
@@ -11719,35 +11756,6 @@ var _user$project$Main$view = function (model) {
 			}
 		});
 };
-var _user$project$Main$Athlete = F7(
-	function (a, b, c, d, e, f, g) {
-		return {name: a, birthYear: b, overallRank: c, overallPoints: d, slPoints: e, gsPoints: f, sgPoints: g};
-	});
-var _user$project$Main$athleteDecoder = _elm_lang$core$Json_Decode$list(
-	A8(
-		_elm_lang$core$Json_Decode$map7,
-		_user$project$Main$Athlete,
-		A2(_elm_lang$core$Json_Decode$field, 'Athlete', _elm_lang$core$Json_Decode$string),
-		A2(_elm_lang$core$Json_Decode$field, 'BirthYear', _elm_lang$core$Json_Decode$string),
-		A2(_elm_lang$core$Json_Decode$field, 'OverallRank', _elm_lang$core$Json_Decode$int),
-		A2(_elm_lang$core$Json_Decode$field, 'OverallPoints', _elm_lang$core$Json_Decode$int),
-		A2(_elm_lang$core$Json_Decode$field, 'SLPointTotal', _elm_lang$core$Json_Decode$int),
-		A2(_elm_lang$core$Json_Decode$field, 'GSPointTotal', _elm_lang$core$Json_Decode$int),
-		A2(_elm_lang$core$Json_Decode$field, 'SGPointTotal', _elm_lang$core$Json_Decode$int)));
-var _user$project$Main$getAthletes = A2(
-	_elm_lang$http$Http$get,
-	_user$project$Main$api,
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'AllPoints',
-			_1: {ctor: '[]'}
-		},
-		_user$project$Main$athleteDecoder));
-var _user$project$Main$Model = function (a) {
-	return {athletes: a};
-};
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
 var _user$project$Main$GetAthletes = {ctor: 'GetAthletes'};
 var _user$project$Main$GotAthletes = function (a) {
@@ -11766,7 +11774,7 @@ var _user$project$Main$update = F2(
 					_0: model,
 					_1: A2(_elm_lang$http$Http$send, _user$project$Main$GotAthletes, _user$project$Main$getAthletes)
 				};
-			default:
+			case 'GotAthletes':
 				var _p2 = _p0._0;
 				if (_p2.ctor === 'Err') {
 					var _p3 = A2(_elm_lang$core$Debug$log, 'getAthletes error ', _p2._0);
@@ -11780,6 +11788,9 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
+			default:
+				var _p4 = A2(_elm_lang$core$Debug$log, 'Click on ', _p0._0);
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
 var _user$project$Main$initialization = A2(
