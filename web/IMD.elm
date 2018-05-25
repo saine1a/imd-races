@@ -30,7 +30,7 @@ update msg model =
                 Err httpError ->
                     let
                         _ =
-                            Debug.log "getAthletes error " httpError
+                            Debug.log "getAthletes error from REST call " httpError
                     in
                         ( model, Cmd.none )
 
