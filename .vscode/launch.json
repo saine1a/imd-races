@@ -8,14 +8,15 @@
             "name": "Launch",
             "type": "go",
             "request": "launch",
-            "mode": "debug",
+            "mode": "auto",
             "remotePath": "",
             "port": 8080,
             "host": "127.0.0.1",
             "program": "${fileDirname}",
             "env": {},
             "args": [],
-            "showLog": true
+            "showLog": true,
+            "cwd": "/Users/steve/Documents/go/src/github.com/saine1a/imd-races"
         }
     ]
 }

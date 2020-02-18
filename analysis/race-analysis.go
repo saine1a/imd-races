@@ -2,8 +2,9 @@ package analysis
 
 import (
 	"fmt"
-	"github.com/saine1a/imd-races/racedata"
 	"sort"
+
+	"github.com/saine1a/imd-races/racedata"
 )
 
 var points = []int{100, 80, 60, 50, 45, 40, 36, 32, 29, 26, 24, 22, 20, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
@@ -26,31 +27,34 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 
 		for i, v := range resultArray {
 
-			if resultArray[i].Dnf == true {
-				resultArray[i].Position = 999
-				resultArray[i].AgePosition = 999
-			} else {
-				if i > 0 && racedata.TotalTime(resultArray[i-1]) == racedata.TotalTime(v) { // Exact same time
-					resultArray[i].Position = resultArray[i-1].Position
-					resultArray[i].AgePosition = resultArray[i-1].AgePosition
+			if resultArray[i].Club != "SBSTA" && resultArray[i].Club != "ASC" && resultArray[i].Club != "SWA" {
+				if resultArray[i].Dnf == true {
+					resultArray[i].Position = 999
+					resultArray[i].AgePosition = 999
 				} else {
-					resultArray[i].AgePosition = i + 1
-					resultArray[i].AgePosition = i + 1
+					if i > 0 && racedata.TotalTime(resultArray[i-1]) == racedata.TotalTime(v) { // Exact same time
+						resultArray[i].Position = resultArray[i-1].Position
+						resultArray[i].AgePosition = resultArray[i-1].AgePosition
+					} else {
+						resultArray[i].AgePosition = i + 1
+						resultArray[i].AgePosition = i + 1
+					}
 				}
-			}
 
-			if v.Age == "U14" {
-				if resultArray[i].AgePosition <= 60 {
-					resultArray[i].Points = u14Points[resultArray[i].AgePosition-1]
+				if v.Age == "U14" || v.Age == "U16" {
+					if resultArray[i].AgePosition <= 60 {
+						resultArray[i].Points = u14Points[resultArray[i].AgePosition-1]
+					} else {
+						resultArray[i].Points = 0
+					}
 				} else {
-					resultArray[i].Points = 0
+					if resultArray[i].AgePosition <= 30 {
+						resultArray[i].Points = points[resultArray[i].AgePosition-1]
+					} else {
+						resultArray[i].Points = 0
+					}
 				}
-			} else {
-				if resultArray[i].AgePosition <= 30 {
-					resultArray[i].Points = points[resultArray[i].AgePosition-1]
-				} else {
-					resultArray[i].Points = 0
-				}
+
 			}
 		}
 	}
@@ -61,7 +65,7 @@ func SingleRaceAnalysis(results racedata.RaceResult) map[string]racedata.ResultA
 type Points struct {
 	Athlete       string
 	Club          string
-	BirthYear	  string
+	BirthYear     string
 	GSPoints      []int
 	SLPoints      []int
 	SGPoints      []int
@@ -162,7 +166,7 @@ func PointsAnalysis(races []racedata.RaceResult, ageGroup string) []*Points {
 						CalculatePoints(athletePoints[v.Athlete])
 						athletePoints[v.Athlete].GSResults = append(athletePoints[v.Athlete].GSResults, v)
 					} else {
-						if r.RaceType == "Super-G" || r.RaceType == "Super G" {
+						if r.RaceType == "Super-G" || r.RaceType == "Super G" || r.RaceType == "Speed Training" {
 							athletePoints[v.Athlete].SGPoints = append(athletePoints[v.Athlete].SGPoints, v.Points)
 							CalculatePoints(athletePoints[v.Athlete])
 							athletePoints[v.Athlete].SGResults = append(athletePoints[v.Athlete].SGResults, v)

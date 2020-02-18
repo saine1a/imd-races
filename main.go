@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/saine1a/imd-races/analysis"
 	"github.com/saine1a/imd-races/racedata"
-	"net/http"
 	"github.com/saine1a/imd-races/racelisting"
 )
 
@@ -15,8 +19,7 @@ var ageGroup = "U16"
 */
 
 var focusAthlete = "Brain, Jonathan"
-var ageGroup = "U14"
-
+var ageGroup = "U16"
 
 var raceResults []racedata.RaceResult
 
@@ -45,7 +48,12 @@ type HomePage struct {
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("home.html")
+	t, err := template.ParseFiles("home.html")
+
+	fmt.Println(err)
+
+	fmt.Println(allPoints)
+	fmt.Println(focusAthlete)
 
 	t.Execute(w, &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete})
 }
@@ -122,7 +130,15 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	path, e := os.Getwd()
+	if e != nil {
+		log.Println(e)
+	}
+	fmt.Println(path) // for example /home/user
+
 	initRaces()
+
+	fmt.Println("INIT DONE")
 
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 
@@ -130,6 +146,9 @@ func main() {
 	http.HandleFunc("/athlete", handleAthlete)
 	http.HandleFunc("/race", handleRace)
 	http.HandleFunc("/races", handleRaceList)
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
 
+	if err != nil {
+		fmt.Println(err)
+	}
 }

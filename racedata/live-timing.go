@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
 	"github.com/saine1a/imd-races/racelisting"
 )
 
@@ -31,6 +32,8 @@ func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
 	query.Set("m", "1")
 	query.Set("u", "0")
 	url.RawQuery = query.Encode()
+
+	fmt.Println(url.RawQuery)
 
 	resp, err := client.Get(url.String())
 
@@ -84,9 +87,10 @@ func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
 
 	for s.Scan() && s.Text() != "hE" {
 
-		if strings.HasPrefix(s.Text(), "hN") {
+		if strings.HasPrefix(s.Text(), "hN=") {
 			components := strings.Split(s.Text(), "=")
 
+			fmt.Println(s.Text())
 			raceResult.RaceName = components[2]
 		}
 

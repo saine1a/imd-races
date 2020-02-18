@@ -3,7 +3,6 @@ package racedata
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/saine1a/imd-races/csvmapper"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/saine1a/imd-races/csvmapper"
 	"github.com/saine1a/imd-races/racelisting"
 )
 
@@ -50,7 +51,9 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 
 	// first get race definition info
 
-	urlString := fmt.Sprintf("https://my.ussa.org/ussa-tools/events/results/%s/2018", definition.RaceId)
+	urlString := fmt.Sprintf("https://my.ussa.org/ussa-tools/events/results/%s/2020", definition.RaceId)
+
+	fmt.Println(urlString)
 
 	url, err := url.Parse(urlString)
 
@@ -144,7 +147,7 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 
 	csvReader = csv.NewReader(strings.NewReader(string(body)))
 
-	// Skip first line
+	// Skip first two lines
 	record, err = csvReader.Read()
 	csvReader.FieldsPerRecord = 0 // Hack to reset csvReader
 
@@ -167,7 +170,7 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 			modifiedResult := Result{}
 
 			modifiedResult.Age = calcAge(result.BirthYear)
-			modifiedResult.BirthYear = fmt.Sprintf("%d",result.BirthYear)
+			modifiedResult.BirthYear = fmt.Sprintf("%d", result.BirthYear)
 			modifiedResult.Athlete = result.Athlete
 			modifiedResult.Ussa = result.AthleteID
 			modifiedResult.Bib = "-"
@@ -184,6 +187,8 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 			modifiedResult.RaceType = raceResult.RaceType
 			modifiedResult.USSAPoints = result.USSAResult
 			raceResult.Results = append(raceResult.Results, &modifiedResult)
+
+			fmt.Println(result.Athlete + " " + result.FinishPlace)
 		}
 	}
 
@@ -195,14 +200,10 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 func calcAge(year int64) string {
 
 	switch year {
-	case 2002:
-		return "U16"
-	case 2003:
-		return "U16"
 	case 2004:
-		return "U14"
+		return "U16"
 	case 2005:
-		return "U14"
+		return "U16"
 	default:
 		return "-"
 
@@ -213,8 +214,8 @@ func convTime(raceTime string) float64 {
 
 	// Special case for wierd bug with USSA site
 
-	if strings.HasPrefix(raceTime,"00:60.") {
-		raceTime = strings.Replace(raceTime,"00:60.","01:00.",1)
+	if strings.HasPrefix(raceTime, "00:60.") {
+		raceTime = strings.Replace(raceTime, "00:60.", "01:00.", 1)
 	}
 
 	theTime, err :=
