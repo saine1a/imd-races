@@ -66,6 +66,8 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 	query.Set("csv", "0")
 	url.RawQuery = query.Encode()
 
+	fmt.Printf("Getting URL %s\n", url.String())
+
 	resp, err := client.Get(url.String())
 
 	defer resp.Body.Close()

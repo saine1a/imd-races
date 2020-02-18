@@ -1,12 +1,21 @@
 package main
 
 import (
+<<<<<<< HEAD
+=======
+	"encoding/json"
+>>>>>>> origin/master
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+<<<<<<< HEAD
 	"os"
 
+=======
+
+	"github.com/gorilla/mux"
+>>>>>>> origin/master
 	"github.com/saine1a/imd-races/analysis"
 	"github.com/saine1a/imd-races/racedata"
 	"github.com/saine1a/imd-races/racelisting"
@@ -19,7 +28,11 @@ var ageGroup = "U16"
 */
 
 var focusAthlete = "Brain, Jonathan"
+<<<<<<< HEAD
 var ageGroup = "U16"
+=======
+var ageGroup = "U14"
+>>>>>>> origin/master
 
 var raceResults []racedata.RaceResult
 
@@ -47,6 +60,7 @@ type HomePage struct {
 	FocusAthlete string
 }
 
+<<<<<<< HEAD
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("home.html")
 
@@ -54,8 +68,16 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(allPoints)
 	fmt.Println(focusAthlete)
+=======
+func handleAthleteImpl() *HomePage {
+	return &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete}
+}
 
-	t.Execute(w, &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete})
+func handleGoHome(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("home.html")
+>>>>>>> origin/master
+
+	t.Execute(w, handleAthleteImpl())
 }
 
 type RacePage struct {
@@ -64,9 +86,7 @@ type RacePage struct {
 	Result       racedata.ResultArray
 }
 
-func handleRace(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("race.html")
-	raceId := r.URL.Query().Get("raceId")
+func handleRaceImpl(raceId string) *RacePage {
 
 	raceIndex := -1
 	raceResult := &racedata.RaceResult{}
@@ -78,21 +98,52 @@ func handleRace(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if raceIndex >= 0 {
+	if raceIndex != -1 {
 		ageGroupResults := analysis.SingleRaceAnalysis(raceResults[raceIndex])[ageGroup]
-		t.Execute(w, &RacePage{RaceResult: raceResult, FocusAthlete: focusAthlete, Result: ageGroupResults})
+
+		return &RacePage{RaceResult: raceResult, FocusAthlete: focusAthlete, Result: ageGroupResults}
+	} else {
+		return nil
+	}
+}
+
+func handleRaceHtml(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("race.html")
+	raceId := r.URL.Query().Get("raceId")
+
+	raceInfo := handleRaceImpl(raceId)
+
+	if raceInfo != nil {
+		t.Execute(w, raceInfo)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
+}
+
+func handleRaceREST(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	raceId := params["raceId"]
+
+	json.NewEncoder(w).Encode(handleRaceImpl(raceId))
 }
 
 type RaceListPage struct {
 	RaceResults []racedata.RaceResult
 }
 
-func handleRaceList(w http.ResponseWriter, r *http.Request) {
+func handleRaceListImpl() *RaceListPage {
+	return &RaceListPage{RaceResults: raceResults}
+}
+
+func handleRaceListHtml(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("raceList.html")
-	t.Execute(w, &RaceListPage{RaceResults: raceResults})
+	t.Execute(w, handleRaceListImpl())
+}
+
+func handleRaceListREST(w http.ResponseWriter, r *http.Request) {
+
+	json.NewEncoder(w).Encode(handleRaceListImpl())
 }
 
 type AthletePage struct {
@@ -102,9 +153,20 @@ type AthletePage struct {
 	AthleteResults []*racedata.Result
 }
 
-func handleAthlete(w http.ResponseWriter, r *http.Request) {
+func handleAthleteHtml(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("athlete.html")
 	athleteName := r.URL.Query().Get("name")
+
+	t.Execute(w, handleIndividualAthleteImpl(athleteName))
+}
+
+func handleAthletesREST(w http.ResponseWriter, r *http.Request) {
+
+	json.NewEncoder(w).Encode(handleAthleteImpl())
+
+}
+
+func handleIndividualAthleteImpl(athleteName string) *AthletePage {
 
 	athleteResults := make([]*racedata.Result, 0)
 
@@ -125,7 +187,16 @@ func handleAthlete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	t.Execute(w, &AthletePage{RaceResults: raceResults, AthleteName: athleteName, AthleteResults: athleteResults})
+	return &AthletePage{RaceResults: raceResults, AthleteName: athleteName, AthleteResults: athleteResults}
+}
+
+func handleIndividualAthleteREST(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	athleteName := params["name"]
+
+	json.NewEncoder(w).Encode(handleIndividualAthleteImpl(athleteName))
 }
 
 func main() {
@@ -138,6 +209,7 @@ func main() {
 
 	initRaces()
 
+<<<<<<< HEAD
 	fmt.Println("INIT DONE")
 
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
@@ -147,6 +219,32 @@ func main() {
 	http.HandleFunc("/race", handleRace)
 	http.HandleFunc("/races", handleRaceList)
 	err := http.ListenAndServe(":8080", nil)
+=======
+	router := mux.NewRouter()
+
+	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
+
+	// HTML routes for Elm code
+
+	router.Handle("/", http.FileServer(http.Dir("./Web")))
+
+	// HTML routes for Go templates
+
+	router.HandleFunc("/go", handleGoHome)
+	router.HandleFunc("/go/athletePage", handleAthleteHtml)
+	router.HandleFunc("/go/racePage", handleRaceHtml)
+	router.HandleFunc("/go/racesPage", handleRaceListHtml)
+
+	// REST API routes
+
+	router.HandleFunc("/athlete/{name}", handleIndividualAthleteREST).Methods("GET")
+	router.HandleFunc("/athlete", handleAthletesREST).Methods("GET")
+	router.HandleFunc("/race/{raceId}", handleRaceREST).Methods("GET")
+	router.HandleFunc("/race", handleRaceListREST).Methods("GET")
+
+	fmt.Println("Ready & listening on 8080")
+	log.Fatal(http.ListenAndServe(":8080", router))
+>>>>>>> origin/master
 
 	if err != nil {
 		fmt.Println(err)

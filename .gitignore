@@ -3,6 +3,8 @@
 
 *shell*
 
+*~
+
 #main.go#
 
 racedata/.#raceresult.go
@@ -11,8 +13,8 @@ racedata/#raceresult.go#
 
 debug
 
-debug
+web/elm-stuff/*
 
-debug
+.DS_Store
 
-debug
+web/.DS_Store

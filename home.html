@@ -9,7 +9,11 @@
 <table cellpadding="10">
 <tr><th>Rank</th><th>Athlete</th><th>Birth Year</th><th>Club</th><th>Points</th><th>SL</th><th>GS</th><th>SG</th></tr>
 {{range .AllPoints}}
+<<<<<<< HEAD
 <tr><td align="right">{{.OverallRank}}</td><td><a href="athlete?name={{.Athlete}}">{{.Athlete}}</a></td><td>{{.BirthYear}}</td><td>{{.Club}}</td><td align="right">{{.OverallPoints}}</td><td align="right">{{.SLPointTotal}}</td><td align="right">{{.GSPointTotal}}</td><td align="right">{{.SGPointTotal}}</td>
+=======
+<tr {{if eq .Athlete $.FocusAthlete}}class="focusRow"{{else if eq .Club "PCSS"}}class="highlightRow"{{end}}><td align="right">{{.OverallRank}}</td><td><a href="athletePage?name={{.Athlete}}">{{.Athlete}}</a></td><td>{{.BirthYear}}</td><td>{{.Club}}</td><td align="right">{{.OverallPoints}}</td><td align="right">{{.SLPointTotal}}</td><td align="right">{{.GSPointTotal}}</td><td align="right">{{.SGPointTotal}}</td>
+>>>>>>> origin/master
 </tr>
 {{end}}
 </table>
