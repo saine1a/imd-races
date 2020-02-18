@@ -18,3 +18,4 @@ web/elm-stuff/*
 .DS_Store
 
 web/.DS_Store
+update-golang/
