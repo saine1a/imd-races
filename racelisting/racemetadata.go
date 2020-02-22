@@ -22,6 +22,7 @@ var Races = []RaceDefinition{
 	{RaceId: "207722", Qualifier: true, TimingSite: LIVETIMING},
 	{RaceId: "207934", Qualifier: true, TimingSite: LIVETIMING},
 	{RaceId: "207538", Qualifier: true, TimingSite: LIVETIMING},
+	{RaceId: "209260", Qualifier: true, TimingSite: LIVETIMING},
 }
 
 /*
