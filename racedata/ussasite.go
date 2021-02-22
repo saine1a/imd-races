@@ -51,7 +51,7 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 
 	// first get race definition info
 
-	urlString := fmt.Sprintf("https://my.ussa.org/ussa-tools/events/results/%s/2020", definition.RaceId)
+	urlString := fmt.Sprintf("https://my.ussa.org/ussa-tools/events/results/%s/2021", definition.RaceId)
 
 	fmt.Println(urlString)
 
@@ -202,7 +202,7 @@ func GetUSSAResults(definition racelisting.RaceDefinition) RaceResult {
 func calcAge(year int64) string {
 
 	switch year {
-	case 2004:
+	case 2006:
 		return "U16"
 	case 2005:
 		return "U16"

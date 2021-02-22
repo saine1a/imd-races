@@ -16,13 +16,9 @@ type RaceDefinition struct {
 //var races = []RaceDefinition{{RaceId: "178531", Qualifier: true, TimingSite: LIVETIMING}, {RaceId: "178336", Qualifier: true, TimingSite: LIVETIMING}, {RaceId: "178251", Qualifier: true, TimingSite: LIVETIMING}}
 var Races = []RaceDefinition{
 
-	{RaceId: "U0493", Qualifier: true, TimingSite: USSA},
-	{RaceId: "U0495", Qualifier: true, TimingSite: USSA},
-	{RaceId: "U0497", Qualifier: true, TimingSite: USSA},
-	{RaceId: "207722", Qualifier: true, TimingSite: LIVETIMING},
-	{RaceId: "207934", Qualifier: true, TimingSite: LIVETIMING},
-	{RaceId: "207538", Qualifier: true, TimingSite: LIVETIMING},
-	{RaceId: "209260", Qualifier: true, TimingSite: LIVETIMING},
+	{RaceId: "U0874", Qualifier: true, TimingSite: USSA},
+	{RaceId: "U0875", Qualifier: true, TimingSite: USSA},
+	{RaceId: "U0876", Qualifier: true, TimingSite: USSA},
 }
 
 /*

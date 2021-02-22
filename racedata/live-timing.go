@@ -33,11 +33,7 @@ func GetLiveTimingResults(definition racelisting.RaceDefinition) RaceResult {
 	query.Set("u", "0")
 	url.RawQuery = query.Encode()
 
-<<<<<<< HEAD
-	fmt.Println(url.RawQuery)
-=======
 	fmt.Printf("Getting URL %s\n", url.String())
->>>>>>> origin/master
 
 	resp, err := client.Get(url.String())
 

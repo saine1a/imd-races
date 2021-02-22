@@ -1,21 +1,14 @@
 package main
 
 import (
-<<<<<<< HEAD
-=======
 	"encoding/json"
->>>>>>> origin/master
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-<<<<<<< HEAD
 	"os"
 
-=======
-
 	"github.com/gorilla/mux"
->>>>>>> origin/master
 	"github.com/saine1a/imd-races/analysis"
 	"github.com/saine1a/imd-races/racedata"
 	"github.com/saine1a/imd-races/racelisting"
@@ -28,11 +21,7 @@ var ageGroup = "U16"
 */
 
 var focusAthlete = "Brain, Jonathan"
-<<<<<<< HEAD
 var ageGroup = "U16"
-=======
-var ageGroup = "U14"
->>>>>>> origin/master
 
 var raceResults []racedata.RaceResult
 
@@ -60,22 +49,12 @@ type HomePage struct {
 	FocusAthlete string
 }
 
-<<<<<<< HEAD
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("home.html")
-
-	fmt.Println(err)
-
-	fmt.Println(allPoints)
-	fmt.Println(focusAthlete)
-=======
 func handleAthleteImpl() *HomePage {
 	return &HomePage{AllPoints: allPoints, FocusAthlete: focusAthlete}
 }
 
 func handleGoHome(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("home.html")
->>>>>>> origin/master
 
 	t.Execute(w, handleAthleteImpl())
 }
@@ -209,17 +188,6 @@ func main() {
 
 	initRaces()
 
-<<<<<<< HEAD
-	fmt.Println("INIT DONE")
-
-	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
-
-	http.HandleFunc("/", handleHome)
-	http.HandleFunc("/athlete", handleAthlete)
-	http.HandleFunc("/race", handleRace)
-	http.HandleFunc("/races", handleRaceList)
-	err := http.ListenAndServe(":8080", nil)
-=======
 	router := mux.NewRouter()
 
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
@@ -244,9 +212,5 @@ func main() {
 
 	fmt.Println("Ready & listening on 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
->>>>>>> origin/master
 
-	if err != nil {
-		fmt.Println(err)
-	}
 }
